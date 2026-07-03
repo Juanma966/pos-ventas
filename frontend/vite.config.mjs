@@ -19,6 +19,9 @@ export default defineConfig(({ mode }) => {
         build: {
             chunkSizeWarningLimit: 1600
         },
+        optimizeDeps: {
+            exclude: ['@tabler/icons-react']
+        },
         preview: {
             open: true,
             host: true

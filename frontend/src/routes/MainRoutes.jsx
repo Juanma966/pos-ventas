@@ -12,7 +12,7 @@ const MainRoutes = {
   path: '/',
   element: <MainLayout />,
   children: [
-    { path: '/', element: <DashboardDefault /> },
+    { index: true, element: <DashboardDefault /> },
     { path: 'dashboard', element: <DashboardDefault /> },
 
     // Ventas
