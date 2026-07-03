@@ -1,5 +1,30 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-02 — Fase 1 completa: limpieza del template y arquitectura base
+
+**Eliminado:**
+
+- Páginas demo de Berry: `Color`, `Shadow`, `Typography`, `sample-page`
+- `menu-items/pages.js`, `menu-items/other.js`, `menu-items/utilities.js`
+
+**Agregado:**
+
+- Navegación real del POS: 5 grupos (`Principal`, `Catálogo`, `Personas`, `Operaciones`, `Administración`) con 12 módulos y sus íconos Tabler
+- `src/constants/app.js` — constantes del negocio (moneda ARS, timezone, rutas, paginación)
+- `src/components/PagePlaceholder.jsx` — pantalla de módulo en construcción
+- Rutas de todos los módulos POS con `PagePlaceholder` como página transitoria
+
+**Reestructurado:**
+
+- `src/layout/` → `src/layouts/`
+- `src/themes/` → `src/theme/`
+- `src/ui-component/` → `src/components/`
+- `src/views/` → `src/pages/`
+- `src/store/constant.js` → `src/constants/store.js`
+- Todos los imports actualizados (30 archivos)
+
+---
+
 ## 2026-06-29 — Setup inicial del monorepo
 
 **Agregado:**

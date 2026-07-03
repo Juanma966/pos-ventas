@@ -1,12 +1,12 @@
-import { RouterProvider } from 'react-router-dom';
+﻿import { RouterProvider } from 'react-router-dom';
 
 // routing
 import router from 'routes';
 
 // project imports
-import NavigationScroll from 'layout/NavigationScroll';
+import NavigationScroll from 'layouts/NavigationScroll';
 
-import ThemeCustomization from 'themes';
+import ThemeCustomization from 'theme';
 
 // auth provider
 

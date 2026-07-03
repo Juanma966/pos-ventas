@@ -1,25 +1,27 @@
-// assets
-import { IconDashboard } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconShoppingCart } from '@tabler/icons-react';
 
-// constant
-const icons = { IconDashboard };
-
-// ==============================|| DASHBOARD MENU ITEMS ||============================== //
-
-const dashboard = {
-  id: 'dashboard',
-  title: 'Dashboard',
+const principal = {
+  id: 'principal',
+  title: 'Principal',
   type: 'group',
   children: [
     {
-      id: 'default',
+      id: 'dashboard',
       title: 'Dashboard',
       type: 'item',
-      url: '/dashboard/default',
-      icon: icons.IconDashboard,
+      url: '/dashboard',
+      icon: IconLayoutDashboard,
+      breadcrumbs: false
+    },
+    {
+      id: 'ventas',
+      title: 'Punto de Venta',
+      type: 'item',
+      url: '/ventas',
+      icon: IconShoppingCart,
       breadcrumbs: false
     }
   ]
 };
 
-export default dashboard;
+export default principal;

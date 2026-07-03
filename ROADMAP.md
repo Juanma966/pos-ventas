@@ -1,16 +1,16 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fase 1 en progreso**. Resto de fases pendientes.
+Estado general: **Fase 1 completa. Fase 2 (Autenticación) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
 - [x] Inicializar repositorio git (monorepo)
 - [x] Separar `frontend/` y `backend/`
 - [x] Documentación base (`ROADMAP.md`, `ARCHITECTURE.md`, `CHANGELOG.md`)
-- [ ] Limpieza del contenido demo del template Berry (Dashboard genérico, sample-page, Color/Shadow/Typography)
-- [ ] Definir navegación real del POS (menu-items)
-- [ ] Reestructurar carpetas del frontend según convención objetivo (`api/`, `components/`, `features/`, `layouts/`, `pages/`, `hooks/`, `services/`, `contexts/`, `routes/`, `theme/`, `utils/`, `constants/`, `assets/`)
-- [ ] Configuración base (variables de entorno, constantes del negocio)
+- [x] Limpieza del contenido demo del template Berry (Dashboard genérico, sample-page, Color/Shadow/Typography)
+- [x] Definir navegación real del POS (menu-items)
+- [x] Reestructurar carpetas del frontend según convención objetivo (`api/`, `components/`, `features/`, `layouts/`, `pages/`, `hooks/`, `services/`, `contexts/`, `routes/`, `theme/`, `utils/`, `constants/`, `assets/`)
+- [x] Configuración base (variables de entorno, constantes del negocio)
 
 ## Fase 2 — Autenticación
 
