@@ -7,6 +7,7 @@ import ProtectedRoute from './ProtectedRoute';
 
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/Default')));
 const ProductsPage = Loadable(lazy(() => import('pages/products/ProductsPage')));
+const CustomersPage = Loadable(lazy(() => import('pages/customers/CustomersPage')));
 
 const MainRoutes = {
   path: '/',
@@ -25,7 +26,7 @@ const MainRoutes = {
     { path: 'categorias', element: <PagePlaceholder title="Categorías" /> },
     { path: 'marcas', element: <PagePlaceholder title="Marcas" /> },
 
-    { path: 'clientes', element: <PagePlaceholder title="Clientes" /> },
+    { path: 'clientes', element: <CustomersPage /> },
     { path: 'proveedores', element: <PagePlaceholder title="Proveedores" /> },
 
     { path: 'compras', element: <PagePlaceholder title="Compras" /> },

@@ -10,6 +10,7 @@ import authRoutes from './modules/auth/auth.routes.js';
 import categoryRoutes from './modules/categories/category.routes.js';
 import brandRoutes from './modules/brands/brand.routes.js';
 import productRoutes from './modules/products/product.routes.js';
+import customerRoutes from './modules/customers/customer.routes.js';
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/brands', brandRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/customers', customerRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
