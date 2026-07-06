@@ -80,6 +80,22 @@ model Customer {
   @@index([document])
 }
 
+model Supplier {
+  id          Int      @id @default(autoincrement())
+  name        String
+  email       String?  @unique
+  phone       String?
+  document    String?  @unique
+  address     String?
+  contactName String?
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([name])
+  @@index([document])
+}
+
 model Product {
   id          Int       @id @default(autoincrement())
   name        String

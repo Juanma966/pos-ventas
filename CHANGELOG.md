@@ -1,5 +1,18 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-06 — Fase 6 completa: CRUD de proveedores
+
+**Agregado:**
+
+- Modelo `Supplier` en Prisma (razón social, email/documento únicos, teléfono, dirección, persona de contacto, `active`) + migración `20260706171148_proveedores`
+- Backend: módulo `suppliers` (`supplier.service.js`, `supplier.controller.js`, `supplier.routes.js`) montado en `/api/suppliers` con autenticación JWT y validación de unicidad de email/documento
+- Frontend: `supplierService.js`, hook `useSuppliers.js`, y páginas en `pages/suppliers/` (`SuppliersPage`, `SupplierTable`, `SupplierFormModal`) con búsqueda, paginación, alta/edición en modal (React Hook Form + Zod) y borrado con confirmación
+- Ruta `/proveedores` conectada a `SuppliersPage` (reemplaza el `PagePlaceholder`)
+
+Módulo espejo del CRUD de Clientes (Fase 5); se omitió el límite de crédito (no aplica) y se agregó persona de contacto.
+
+---
+
 ## 2026-07-02 — Fase 1 completa: limpieza del template y arquitectura base
 
 **Eliminado:**

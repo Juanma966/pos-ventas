@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 5 completas. Fase 6 (Proveedores) es la siguiente.**
+Estado general: **Fases 1 a 6 completas. Fase 7 (Compras) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -49,7 +49,9 @@ Estado general: **Fases 1 a 5 completas. Fase 6 (Proveedores) es la siguiente.**
 
 ## Fase 6 — Proveedores
 
-- [ ] CRUD completo
+- [x] CRUD completo (crear, editar, eliminar)
+- [x] Campos: razón social, CUIT/CUIL, email, teléfono, persona de contacto, dirección
+- [x] Búsqueda y paginación
 
 ## Fase 7 — Compras
 
