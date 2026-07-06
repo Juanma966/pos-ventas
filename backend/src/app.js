@@ -1,0 +1,37 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+
+import { env } from './config/env.js';
+import { errorMiddleware } from './middleware/error.middleware.js';
+import authRoutes from './modules/auth/auth.routes.js';
+
+const app = express();
+
+app.use(helmet());
+app.use(cors({
+  origin: env.frontendUrl,
+  credentials: true,
+}));
+app.use(morgan(env.isDev ? 'dev' : 'combined'));
+app.use(express.json());
+app.use(cookieParser());
+
+// Rutas
+app.use('/api/auth', authRoutes);
+
+// Health check
+app.get('/api/health', (_req, res) => {
+  res.json({ status: 'ok', env: env.nodeEnv });
+});
+
+// 404
+app.use((_req, res) => {
+  res.status(404).json({ success: false, message: 'Ruta no encontrada' });
+});
+
+app.use(errorMiddleware);
+
+export default app;
