@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 6 completas. Fase 7 (Compras) es la siguiente.**
+Estado general: **Fases 1 a 7 completas. Fase 8 (Ventas — módulo principal) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -55,9 +55,12 @@ Estado general: **Fases 1 a 6 completas. Fase 7 (Compras) es la siguiente.**
 
 ## Fase 7 — Compras
 
-- [ ] Órdenes
-- [ ] Recepción
-- [ ] Actualización automática del stock
+- [x] Órdenes de compra con múltiples renglones (proveedor + productos)
+- [x] Estados: pendiente / recibida / cancelada
+- [x] Recepción con actualización automática de stock y costo (último costo) en transacción
+- [x] Edición/eliminación solo en estado pendiente; cancelación sin efecto en stock
+- [x] Listado con filtro por estado, búsqueda por proveedor y paginación
+- [ ] Reversión de stock al cancelar una compra ya recibida (mejora futura)
 
 ## Fase 8 — Ventas (módulo principal)
 
@@ -123,7 +126,8 @@ Estado general: **Fases 1 a 6 completas. Fase 7 (Compras) es la siguiente.**
 
 ## Pendientes / notas abiertas
 
-Ninguna por ahora.
+- **Validación en backend:** los módulos validan solo con Zod en el frontend; falta middleware de validación en la API (deuda transversal a todos los módulos).
+- **`formatCurrency` compartido:** se creó `utils/formatCurrency.js` y se usa en Compras; queda migrar los usos inline duplicados en Clientes, Productos y Dashboard.
 
 ## Bugs conocidos
 

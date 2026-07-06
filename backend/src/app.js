@@ -12,6 +12,7 @@ import brandRoutes from './modules/brands/brand.routes.js';
 import productRoutes from './modules/products/product.routes.js';
 import customerRoutes from './modules/customers/customer.routes.js';
 import supplierRoutes from './modules/suppliers/supplier.routes.js';
+import purchaseRoutes from './modules/purchases/purchase.routes.js';
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/brands', brandRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/suppliers', supplierRoutes);
+app.use('/api/purchases', purchaseRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

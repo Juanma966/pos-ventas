@@ -1,5 +1,19 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-06 — Fase 7 completa: módulo de compras
+
+**Agregado:**
+
+- Modelos `Purchase` y `PurchaseItem` + enum `PurchaseStatus` (PENDING/RECEIVED/CANCELLED) en Prisma, con relaciones a Supplier, User y Product + migración `20260706175017_compras`
+- Backend: módulo `purchases` (`purchase.service.js`, `purchase.controller.js`, `purchase.routes.js`) en `/api/purchases`, con `receive()` y `cancel()`. La recepción sube el stock y actualiza el costo (último costo) de cada producto dentro de una transacción Prisma; edición/eliminación limitadas al estado pendiente
+- Frontend: `purchaseService.js`, hook `usePurchases.js` (lista + detalle), y páginas en `pages/purchases/`: `PurchasesPage` (listado con filtro por estado, búsqueda y paginación) y `PurchaseFormPage` (páginas dedicadas `/compras/nueva` y `/compras/:id` para alta, edición de pendientes, vista de solo lectura y acciones recibir/cancelar/eliminar), con editor de renglones dinámico (`PurchaseItemsEditor` vía React Hook Form + `useFieldArray` + Zod)
+- `utils/formatCurrency.js` — formateador de moneda reutilizable (ARS)
+- Rutas `/compras`, `/compras/nueva` y `/compras/:id` conectadas (reemplazan el `PagePlaceholder`)
+
+Primer módulo con lógica de negocio real (órdenes multi-ítem + actualización transaccional de stock), más allá del patrón CRUD.
+
+---
+
 ## 2026-07-06 — Fase 6 completa: CRUD de proveedores
 
 **Agregado:**

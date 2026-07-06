@@ -25,6 +25,7 @@ model User {
   roleId        Int
   role          Role           @relation(fields: [roleId], references: [id])
   refreshTokens RefreshToken[]
+  purchases     Purchase[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
@@ -89,6 +90,7 @@ model Supplier {
   address     String?
   contactName String?
   active      Boolean  @default(true)
+  purchases   Purchase[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -110,10 +112,50 @@ model Product {
   category    Category  @relation(fields: [categoryId], references: [id])
   brandId     Int?
   brand       Brand?    @relation(fields: [brandId], references: [id])
+  purchaseItems PurchaseItem[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
   @@index([name])
   @@index([barcode])
   @@index([categoryId])
+}
+
+enum PurchaseStatus {
+  PENDING
+  RECEIVED
+  CANCELLED
+}
+
+model Purchase {
+  id         Int            @id @default(autoincrement())
+  supplierId Int
+  supplier   Supplier       @relation(fields: [supplierId], references: [id])
+  userId     Int
+  user       User           @relation(fields: [userId], references: [id])
+  status     PurchaseStatus @default(PENDING)
+  total      Decimal        @default(0) @db.Decimal(12, 2)
+  notes      String?
+  items      PurchaseItem[]
+  receivedAt DateTime?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  @@index([supplierId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model PurchaseItem {
+  id         Int      @id @default(autoincrement())
+  purchaseId Int
+  purchase   Purchase @relation(fields: [purchaseId], references: [id], onDelete: Cascade)
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id])
+  quantity   Int
+  cost       Decimal  @db.Decimal(10, 2)
+  subtotal   Decimal  @db.Decimal(12, 2)
+
+  @@index([purchaseId])
+  @@index([productId])
 }
