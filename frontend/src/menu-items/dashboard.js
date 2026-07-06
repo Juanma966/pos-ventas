@@ -1,4 +1,4 @@
-import { IconLayoutDashboard, IconShoppingCart } from '@tabler/icons-react';
+import { IconLayoutDashboard, IconShoppingCart, IconReceipt } from '@tabler/icons-react';
 
 const principal = {
   id: 'principal',
@@ -19,6 +19,14 @@ const principal = {
       type: 'item',
       url: '/ventas',
       icon: IconShoppingCart,
+      breadcrumbs: false
+    },
+    {
+      id: 'historial-ventas',
+      title: 'Ventas',
+      type: 'item',
+      url: '/ventas/historial',
+      icon: IconReceipt,
       breadcrumbs: false
     }
   ]

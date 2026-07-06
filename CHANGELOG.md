@@ -1,5 +1,19 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-06 — Fase 8A completa: POS core (ventas)
+
+**Agregado:**
+
+- Modelos `Sale` y `SaleItem` + enums `PaymentMethod` (EFECTIVO/TARJETA/TRANSFERENCIA) y `SaleStatus` (COMPLETED/CANCELLED) en Prisma, con relaciones a Customer/User/Product + migración `20260706181145_ventas`
+- Backend: módulo `sales` (`sale.service.js`, `sale.controller.js`, `sale.routes.js`) en `/api/sales`. `create()` valida stock, calcula subtotal/descuento/total, crea la venta y descuenta stock en una transacción (bloquea si el stock es insuficiente); `cancel()` repone el stock también en transacción
+- Frontend POS: `pages/pos/POSPage.jsx` (layout a 2 columnas) con `ProductSearchGrid`, `Cart` y `CheckoutPanel`, más el hook `useCart.js` (carrito con tope de stock) y `saleService.js`
+- Frontend ventas: `pages/sales/SalesPage.jsx` (listado con filtro por estado y paginación), `SalesTable` y `SaleDetailModal` (detalle + anulación con reposición de stock); hook `useSales.js`
+- Rutas `/ventas` (POS) y `/ventas/historial` (listado), e item de menú "Ventas" en el grupo Principal
+
+Primera etapa (8A) del módulo central: el precio se trata como final (IVA incluido) y el pago es un método por venta; impresión de ticket (8B) y devoluciones (8C) quedan pendientes.
+
+---
+
 ## 2026-07-06 — Fase 7 completa: módulo de compras
 
 **Agregado:**

@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 7 completas. Fase 8 (Ventas — módulo principal) es la siguiente.**
+Estado general: **Fases 1 a 7 completas. Fase 8A (POS core) completa; faltan 8B (ticket) y 8C (devoluciones).**
 
 ## Fase 1 — Base del proyecto
 
@@ -64,13 +64,29 @@ Estado general: **Fases 1 a 7 completas. Fase 8 (Ventas — módulo principal) e
 
 ## Fase 8 — Ventas (módulo principal)
 
-- [ ] POS
-- [ ] Carrito
-- [ ] Descuentos
-- [ ] Impuestos
-- [ ] Múltiples métodos de pago
-- [ ] Impresión de ticket
-- [ ] Devoluciones
+### 8A — POS core (completo)
+
+- [x] Pantalla POS: buscador + grilla de productos y carrito
+- [x] Carrito con control de cantidad (tope = stock disponible)
+- [x] Descuento a nivel de venta
+- [x] Método de pago (efectivo / tarjeta / transferencia, uno por venta)
+- [x] Cliente opcional (consumidor final por defecto)
+- [x] Venta transaccional que descuenta stock; bloqueo si stock insuficiente
+- [x] Listado de ventas con filtro por estado, detalle y anulación (repone stock)
+- [x] Impuestos: precio tratado como final (IVA incluido); discriminación diferida a Fase 12
+
+### 8B — Impresión de ticket (pendiente)
+
+- [ ] Vista imprimible del ticket
+
+### 8C — Devoluciones (pendiente)
+
+- [ ] Devolución total / parcial de una venta
+
+### Pendiente de integración
+
+- [ ] Múltiples métodos de pago (pago dividido) — mejora futura
+- [ ] Asociar venta a una caja abierta (requiere Fase 9 — Caja)
 
 ## Fase 9 — Caja
 
