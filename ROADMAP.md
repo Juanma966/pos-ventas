@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fase 1 y Fase 2 completas. Fase 3 (Dashboard) es la siguiente.**
+Estado general: **Fases 1, 2 y 3 completas. Fase 4 (Productos) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -23,10 +23,10 @@ Estado general: **Fase 1 y Fase 2 completas. Fase 3 (Dashboard) es la siguiente.
 
 ## Fase 3 — Dashboard
 
-- [ ] KPIs
-- [ ] Gráficos
-- [ ] Actividad reciente
-- [ ] Indicadores
+- [x] KPIs (Ventas hoy, Transacciones, Bajo stock, Clientes nuevos)
+- [x] Gráfico de ventas por mes (comparación año actual vs anterior)
+- [x] Actividad reciente (últimas ventas del día)
+- [x] Hook useDashboard (mock, listo para conectar a API)
 
 ## Fase 4 — Productos
 
