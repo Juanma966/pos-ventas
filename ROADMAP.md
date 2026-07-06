@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fase 1 completa. Fase 2 (Autenticación) es la siguiente.**
+Estado general: **Fase 1 y Fase 2 completas. Fase 3 (Dashboard) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -14,12 +14,12 @@ Estado general: **Fase 1 completa. Fase 2 (Autenticación) es la siguiente.**
 
 ## Fase 2 — Autenticación
 
-- [ ] Bootstrap del backend (Express + Prisma + PostgreSQL)
-- [ ] Login
-- [ ] Logout
-- [ ] Refresh Token
-- [ ] Roles
-- [ ] Permisos
+- [x] Bootstrap del backend (Express + Prisma + PostgreSQL)
+- [x] Login (JWT access token + refresh token con rotación)
+- [x] Logout
+- [x] Refresh Token
+- [x] Roles (admin, cajero, vendedor)
+- [ ] Permisos granulares (Fase futura)
 
 ## Fase 3 — Dashboard
 
