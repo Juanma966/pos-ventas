@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1, 2 y 3 completas. Fase 4 (Productos) es la siguiente.**
+Estado general: **Fases 1 a 4 completas. Fase 5 (Clientes) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -30,12 +30,13 @@ Estado general: **Fases 1, 2 y 3 completas. Fase 4 (Productos) es la siguiente.*
 
 ## Fase 4 — Productos
 
-- [ ] CRUD
-- [ ] Categorías
-- [ ] Marcas
-- [ ] Stock
-- [ ] Imágenes
-- [ ] Código de barras
+- [x] CRUD completo (crear, editar, eliminar)
+- [x] Categorías (CRUD backend + selector en formulario)
+- [x] Marcas (CRUD backend + selector en formulario)
+- [x] Stock con alerta de bajo stock
+- [x] Código de barras
+- [x] Búsqueda y paginación
+- [ ] Imágenes (pendiente)
 
 ## Fase 5 — Clientes
 
