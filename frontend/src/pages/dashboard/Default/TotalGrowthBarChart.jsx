@@ -1,43 +1,33 @@
-﻿import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import Grid from '@mui/material/Grid2';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
-// third party
 import ApexCharts from 'apexcharts';
 import Chart from 'react-apexcharts';
 
-// project imports
 import useConfig from 'hooks/useConfig';
 import SkeletonTotalGrowthBarChart from 'components/cards/Skeleton/TotalGrowthBarChart';
 import MainCard from 'components/cards/MainCard';
 import { gridSpacing } from 'constants/store';
 
-// chart data
 import chartData from './chart-data/total-growth-bar-chart';
 
-const status = [
-  {
-    value: 'today',
-    label: 'Today'
-  },
-  {
-    value: 'month',
-    label: 'This Month'
-  },
-  {
-    value: 'year',
-    label: 'This Year'
-  }
+const periodos = [
+  { value: 'anio', label: 'Este año' },
+  { value: 'semestre', label: 'Último semestre' },
+  { value: 'trimestre', label: 'Último trimestre' }
 ];
 
-export default function TotalGrowthBarChart({ isLoading }) {
-  const [value, setValue] = React.useState('today');
+const formatCurrency = (value) =>
+  new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(value);
+
+export default function TotalGrowthBarChart({ isLoading, ventasMensuales }) {
+  const [periodo, setPeriodo] = React.useState('anio');
   const theme = useTheme();
   const { mode } = useConfig();
 
@@ -45,40 +35,25 @@ export default function TotalGrowthBarChart({ isLoading }) {
   const darkLight = theme.palette.dark.light;
   const divider = theme.palette.divider;
   const grey500 = theme.palette.grey[500];
-
   const primary200 = theme.palette.primary[200];
   const primaryDark = theme.palette.primary.dark;
   const secondaryMain = theme.palette.secondary.main;
-  const secondaryLight = theme.palette.secondary.light;
 
   React.useEffect(() => {
     const newChartData = {
       ...chartData.options,
-      colors: [primary200, primaryDark, secondaryMain, secondaryLight],
-      xaxis: {
-        labels: {
-          style: {
-            style: { colors: primary }
-          }
-        }
-      },
-      yaxis: {
-        labels: {
-          style: {
-            style: { colors: primary }
-          }
-        }
-      },
+      colors: [primaryDark, primary200],
+      xaxis: { labels: { style: { colors: Array(12).fill(primary) } } },
+      yaxis: { labels: { style: { colors: [primary] } } },
       grid: { borderColor: divider },
       tooltip: { theme: mode },
       legend: { labels: { colors: grey500 } }
     };
+    if (!isLoading) ApexCharts.exec('bar-chart', 'updateOptions', newChartData);
+  }, [mode, primary200, primaryDark, secondaryMain, primary, darkLight, divider, isLoading, grey500]);
 
-    // do not load chart when loading
-    if (!isLoading) {
-      ApexCharts.exec(`bar-chart`, 'updateOptions', newChartData);
-    }
-  }, [mode, primary200, primaryDark, secondaryMain, secondaryLight, primary, darkLight, divider, isLoading, grey500]);
+  // Total del año actual (suma de todos los meses)
+  const totalAnio = ventasMensuales?.esteAnio?.reduce((acc, v) => acc + v, 0) ?? 0;
 
   return (
     <>
@@ -92,18 +67,18 @@ export default function TotalGrowthBarChart({ isLoading }) {
                 <Grid>
                   <Grid container direction="column" spacing={1}>
                     <Grid>
-                      <Typography variant="subtitle2">Total Growth</Typography>
+                      <Typography variant="subtitle2">Ventas del año</Typography>
                     </Grid>
                     <Grid>
-                      <Typography variant="h3">$2,324.00</Typography>
+                      <Typography variant="h3">{formatCurrency(totalAnio)}</Typography>
                     </Grid>
                   </Grid>
                 </Grid>
                 <Grid>
-                  <TextField id="standard-select-currency" select value={value} onChange={(e) => setValue(e.target.value)}>
-                    {status.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                        {option.label}
+                  <TextField select value={periodo} onChange={(e) => setPeriodo(e.target.value)} size="small">
+                    {periodos.map((op) => (
+                      <MenuItem key={op.value} value={op.value}>
+                        {op.label}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -113,22 +88,8 @@ export default function TotalGrowthBarChart({ isLoading }) {
             <Grid
               size={12}
               sx={{
-                ...theme.applyStyles('light', {
-                  '& .apexcharts-series:nth-of-type(4) path:hover': {
-                    filter: `brightness(0.95)`,
-                    transition: 'all 0.3s ease'
-                  }
-                }),
-                '& .apexcharts-menu': {
-                  bgcolor: 'background.paper'
-                },
-                '.apexcharts-theme-light .apexcharts-menu-item:hover': {
-                  bgcolor: 'dark.main'
-                },
-                '& .apexcharts-theme-light .apexcharts-menu-icon:hover svg, .apexcharts-theme-light .apexcharts-reset-icon:hover svg, .apexcharts-theme-light .apexcharts-selection-icon:not(.apexcharts-selected):hover svg, .apexcharts-theme-light .apexcharts-zoom-icon:not(.apexcharts-selected):hover svg, .apexcharts-theme-light .apexcharts-zoomin-icon:hover svg, .apexcharts-theme-light .apexcharts-zoomout-icon:hover svg':
-                  {
-                    fill: theme.palette.grey[400]
-                  }
+                '& .apexcharts-menu': { bgcolor: 'background.paper' },
+                '.apexcharts-theme-light .apexcharts-menu-item:hover': { bgcolor: 'dark.main' }
               }}
             >
               <Chart {...chartData} />
@@ -140,4 +101,10 @@ export default function TotalGrowthBarChart({ isLoading }) {
   );
 }
 
-TotalGrowthBarChart.propTypes = { isLoading: PropTypes.bool };
+TotalGrowthBarChart.propTypes = {
+  isLoading: PropTypes.bool,
+  ventasMensuales: PropTypes.shape({
+    esteAnio: PropTypes.arrayOf(PropTypes.number),
+    anioAnterior: PropTypes.arrayOf(PropTypes.number)
+  })
+};

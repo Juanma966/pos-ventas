@@ -1,7 +1,6 @@
-﻿import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import React from 'react';
 
-// material-ui
 import { useTheme } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -9,26 +8,20 @@ import Grid from '@mui/material/Grid2';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-// third party
 import Chart from 'react-apexcharts';
 
-// project imports
-import ChartDataMonth from './chart-data/total-order-month-line-chart';
-import ChartDataYear from './chart-data/total-order-year-line-chart';
+import ChartDataSemana from './chart-data/total-order-month-line-chart';
+import ChartDataMes from './chart-data/total-order-year-line-chart';
 import MainCard from 'components/cards/MainCard';
 import SkeletonTotalOrderCard from 'components/cards/Skeleton/EarningCard';
 
-// assets
-import LocalMallOutlinedIcon from '@mui/icons-material/LocalMallOutlined';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
+import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
-export default function TotalOrderLineChartCard({ isLoading }) {
+export default function TotalOrderLineChartCard({ isLoading, cantidad = 0, variacion = 0 }) {
   const theme = useTheme();
-
-  const [timeValue, setTimeValue] = React.useState(false);
-  const handleChangeTime = (event, newValue) => {
-    setTimeValue(newValue);
-  };
+  const [verSemana, setVerSemana] = React.useState(true);
+  const esPositivo = variacion >= 0;
 
   return (
     <>
@@ -43,10 +36,7 @@ export default function TotalOrderLineChartCard({ isLoading }) {
             color: '#fff',
             overflow: 'hidden',
             position: 'relative',
-            '&>div': {
-              position: 'relative',
-              zIndex: 5
-            },
+            '&>div': { position: 'relative', zIndex: 5 },
             '&:after': {
               content: '""',
               position: 'absolute',
@@ -85,27 +75,27 @@ export default function TotalOrderLineChartCard({ isLoading }) {
                         mt: 1
                       }}
                     >
-                      <LocalMallOutlinedIcon fontSize="inherit" />
+                      <ReceiptLongOutlinedIcon fontSize="inherit" />
                     </Avatar>
                   </Grid>
                   <Grid>
                     <Button
                       disableElevation
-                      variant={timeValue ? 'contained' : 'text'}
+                      variant={verSemana ? 'contained' : 'text'}
                       size="small"
                       sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, true)}
+                      onClick={() => setVerSemana(true)}
                     >
-                      Month
+                      Semana
                     </Button>
                     <Button
                       disableElevation
-                      variant={!timeValue ? 'contained' : 'text'}
+                      variant={!verSemana ? 'contained' : 'text'}
                       size="small"
                       sx={{ color: 'inherit' }}
-                      onClick={(e) => handleChangeTime(e, false)}
+                      onClick={() => setVerSemana(false)}
                     >
-                      Year
+                      Mes
                     </Button>
                   </Grid>
                 </Grid>
@@ -115,33 +105,25 @@ export default function TotalOrderLineChartCard({ isLoading }) {
                   <Grid size={6}>
                     <Grid container sx={{ alignItems: 'center' }}>
                       <Grid>
-                        {timeValue ? (
-                          <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>$108</Typography>
-                        ) : (
-                          <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>$961</Typography>
-                        )}
+                        <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
+                          {cantidad}
+                        </Typography>
                       </Grid>
                       <Grid>
                         <Avatar
                           sx={{
                             ...theme.typography.smallAvatar,
                             cursor: 'pointer',
-                            bgcolor: 'primary.200',
-                            color: 'primary.dark'
+                            bgcolor: esPositivo ? 'success.dark' : 'error.dark',
+                            color: '#fff'
                           }}
                         >
-                          <ArrowDownwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
+                          <TrendingUpIcon fontSize="inherit" />
                         </Avatar>
                       </Grid>
                       <Grid size={12}>
-                        <Typography
-                          sx={{
-                            fontSize: '1rem',
-                            fontWeight: 500,
-                            color: 'primary.200'
-                          }}
-                        >
-                          Total Order
+                        <Typography sx={{ fontSize: '1rem', fontWeight: 500, color: 'primary.200' }}>
+                          Transacciones hoy
                         </Typography>
                       </Grid>
                     </Grid>
@@ -151,12 +133,11 @@ export default function TotalOrderLineChartCard({ isLoading }) {
                     sx={{
                       '.apexcharts-tooltip.apexcharts-theme-light': {
                         color: theme.palette.text.primary,
-                        background: theme.palette.background.default,
-                        ...theme.applyStyles('dark', { border: 'none' })
+                        background: theme.palette.background.default
                       }
                     }}
                   >
-                    {timeValue ? <Chart {...ChartDataMonth} /> : <Chart {...ChartDataYear} />}
+                    {verSemana ? <Chart {...ChartDataSemana} /> : <Chart {...ChartDataMes} />}
                   </Grid>
                 </Grid>
               </Grid>
@@ -168,4 +149,8 @@ export default function TotalOrderLineChartCard({ isLoading }) {
   );
 }
 
-TotalOrderLineChartCard.propTypes = { isLoading: PropTypes.bool };
+TotalOrderLineChartCard.propTypes = {
+  isLoading: PropTypes.bool,
+  cantidad: PropTypes.number,
+  variacion: PropTypes.number
+};

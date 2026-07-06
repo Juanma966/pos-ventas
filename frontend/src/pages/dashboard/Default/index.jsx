@@ -1,53 +1,56 @@
-﻿import { useEffect, useState } from 'react';
-
-// material-ui
 import Grid from '@mui/material/Grid2';
+import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 
-// project imports
 import EarningCard from './EarningCard';
-import PopularCard from './PopularCard';
 import TotalOrderLineChartCard from './TotalOrderLineChartCard';
 import TotalIncomeDarkCard from 'components/cards/TotalIncomeDarkCard';
 import TotalIncomeLightCard from 'components/cards/TotalIncomeLightCard';
 import TotalGrowthBarChart from './TotalGrowthBarChart';
+import PopularCard from './PopularCard';
 
 import { gridSpacing } from 'constants/store';
-
-// assets
-import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
-
-// ==============================|| DEFAULT DASHBOARD ||============================== //
+import { useDashboard } from 'hooks/useDashboard';
 
 export default function Dashboard() {
-  const [isLoading, setLoading] = useState(true);
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  const {
+    isLoading,
+    ventasHoy,
+    transaccionesHoy,
+    productosBajoStock,
+    clientesNuevosMes,
+    ventasMensuales,
+    ultimasVentas
+  } = useDashboard();
 
   return (
     <Grid container spacing={gridSpacing}>
       <Grid size={12}>
         <Grid container spacing={gridSpacing}>
           <Grid size={{ lg: 4, md: 6, sm: 6, xs: 12 }}>
-            <EarningCard isLoading={isLoading} />
+            <EarningCard
+              isLoading={isLoading}
+              monto={ventasHoy?.monto}
+              variacion={ventasHoy?.variacion}
+            />
           </Grid>
           <Grid size={{ lg: 4, md: 6, sm: 6, xs: 12 }}>
-            <TotalOrderLineChartCard isLoading={isLoading} />
+            <TotalOrderLineChartCard
+              isLoading={isLoading}
+              cantidad={transaccionesHoy?.cantidad}
+              variacion={transaccionesHoy?.variacion}
+            />
           </Grid>
           <Grid size={{ lg: 4, md: 12, sm: 12, xs: 12 }}>
             <Grid container spacing={gridSpacing}>
               <Grid size={{ sm: 6, xs: 12, md: 6, lg: 12 }}>
-                <TotalIncomeDarkCard isLoading={isLoading} />
+                <TotalIncomeDarkCard isLoading={isLoading} cantidad={productosBajoStock} />
               </Grid>
               <Grid size={{ sm: 6, xs: 12, md: 6, lg: 12 }}>
                 <TotalIncomeLightCard
-                  {...{
-                    isLoading: isLoading,
-                    total: 203,
-                    label: 'Total Income',
-                    icon: <StorefrontTwoToneIcon fontSize="inherit" />
-                  }}
+                  isLoading={isLoading}
+                  total={clientesNuevosMes}
+                  label="Clientes nuevos este mes"
+                  icon={<PeopleAltOutlinedIcon fontSize="inherit" />}
                 />
               </Grid>
             </Grid>
@@ -57,10 +60,10 @@ export default function Dashboard() {
       <Grid size={12}>
         <Grid container spacing={gridSpacing}>
           <Grid size={{ xs: 12, md: 8 }}>
-            <TotalGrowthBarChart isLoading={isLoading} />
+            <TotalGrowthBarChart isLoading={isLoading} ventasMensuales={ventasMensuales} />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
-            <PopularCard isLoading={isLoading} />
+            <PopularCard isLoading={isLoading} ultimasVentas={ultimasVentas} />
           </Grid>
         </Grid>
       </Grid>

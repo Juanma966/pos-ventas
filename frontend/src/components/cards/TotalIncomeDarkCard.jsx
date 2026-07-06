@@ -1,5 +1,4 @@
-﻿import PropTypes from 'prop-types';
-// material-ui
+import PropTypes from 'prop-types';
 import { styled, useTheme } from '@mui/material/styles';
 import Avatar from '@mui/material/Avatar';
 import List from '@mui/material/List';
@@ -9,14 +8,11 @@ import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
-// project imports
 import MainCard from 'components/cards/MainCard';
 import TotalIncomeCard from 'components/cards/Skeleton/TotalIncomeCard';
 
-// assets
-import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
 
-// styles
 const CardWrapper = styled(MainCard)(({ theme }) => ({
   backgroundColor: theme.palette.primary.dark,
   color: theme.palette.primary.light,
@@ -44,7 +40,7 @@ const CardWrapper = styled(MainCard)(({ theme }) => ({
   }
 }));
 
-export default function TotalIncomeDarkCard({ isLoading }) {
+export default function TotalIncomeDarkCard({ isLoading, cantidad = 0 }) {
   const theme = useTheme();
 
   return (
@@ -62,27 +58,23 @@ export default function TotalIncomeDarkCard({ isLoading }) {
                     sx={{
                       ...theme.typography.commonAvatar,
                       ...theme.typography.largeAvatar,
-                      bgcolor: 'primary.800',
+                      bgcolor: cantidad > 0 ? 'warning.dark' : 'success.dark',
                       color: '#fff'
                     }}
                   >
-                    <TableChartOutlinedIcon fontSize="inherit" />
+                    <WarningAmberOutlinedIcon fontSize="inherit" />
                   </Avatar>
                 </ListItemAvatar>
                 <ListItemText
-                  sx={{
-                    py: 0,
-                    mt: 0.45,
-                    mb: 0.45
-                  }}
+                  sx={{ py: 0, mt: 0.45, mb: 0.45 }}
                   primary={
                     <Typography variant="h4" sx={{ color: '#fff' }}>
-                      $203k
+                      {cantidad} {cantidad === 1 ? 'producto' : 'productos'}
                     </Typography>
                   }
                   secondary={
                     <Typography variant="subtitle2" sx={{ color: 'primary.light', mt: 0.25 }}>
-                      Total Income
+                      Bajo stock
                     </Typography>
                   }
                 />
@@ -95,4 +87,4 @@ export default function TotalIncomeDarkCard({ isLoading }) {
   );
 }
 
-TotalIncomeDarkCard.propTypes = { isLoading: PropTypes.bool };
+TotalIncomeDarkCard.propTypes = { isLoading: PropTypes.bool, cantidad: PropTypes.number };
