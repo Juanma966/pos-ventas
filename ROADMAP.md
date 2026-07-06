@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 4 completas. Fase 5 (Clientes) es la siguiente.**
+Estado general: **Fases 1 a 5 completas. Fase 6 (Proveedores) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -40,10 +40,12 @@ Estado general: **Fases 1 a 4 completas. Fase 5 (Clientes) es la siguiente.**
 
 ## Fase 5 — Clientes
 
-- [ ] CRUD
-- [ ] Historial
-- [ ] Crédito
-- [ ] Estadísticas
+- [x] CRUD completo (crear, editar, eliminar)
+- [x] Campos: nombre, email, teléfono, documento, dirección, notas
+- [x] Límite de crédito
+- [x] Búsqueda y paginación
+- [ ] Historial de compras (requiere Fase 8 — Ventas)
+- [ ] Estadísticas por cliente (requiere Fase 8 — Ventas)
 
 ## Fase 6 — Proveedores
 
