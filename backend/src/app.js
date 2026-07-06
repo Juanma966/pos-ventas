@@ -7,6 +7,9 @@ import cookieParser from 'cookie-parser';
 import { env } from './config/env.js';
 import { errorMiddleware } from './middleware/error.middleware.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import categoryRoutes from './modules/categories/category.routes.js';
+import brandRoutes from './modules/brands/brand.routes.js';
+import productRoutes from './modules/products/product.routes.js';
 
 const app = express();
 
@@ -21,6 +24,9 @@ app.use(cookieParser());
 
 // Rutas
 app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/brands', brandRoutes);
+app.use('/api/products', productRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {
