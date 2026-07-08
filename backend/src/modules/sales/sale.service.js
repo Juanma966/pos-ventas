@@ -1,7 +1,19 @@
 import { PrismaClient } from '@prisma/client';
 import { AppError } from '../../middleware/error.middleware.js';
+import { findOpenSession } from '../cash/cash.service.js';
 
 const prisma = new PrismaClient();
+
+// Registra un movimiento de caja para una venta en efectivo, solo si hay caja abierta.
+// Usa el cliente transaccional (tx) para mantener la atomicidad con la venta.
+async function registerCashMovement(tx, { sale, type, amount, userId, description }) {
+  if (sale.paymentMethod !== 'EFECTIVO') return;
+  const session = await findOpenSession(tx);
+  if (!session) return;
+  await tx.cashMovement.create({
+    data: { sessionId: session.id, userId, type, amount, saleId: sale.id, description },
+  });
+}
 
 const PAYMENT_METHODS = ['EFECTIVO', 'TARJETA', 'TRANSFERENCIA'];
 
@@ -121,11 +133,13 @@ export const saleService = {
         });
       }
 
+      await registerCashMovement(tx, { sale, type: 'SALE', amount: total, userId, description: 'Venta en efectivo' });
+
       return sale;
     });
   },
 
-  async cancel(id) {
+  async cancel(id, userId) {
     const sale = await saleService.findById(id);
     if (sale.status !== 'COMPLETED') {
       throw new AppError('Solo se pueden anular ventas completadas (sin devoluciones)');
@@ -139,6 +153,8 @@ export const saleService = {
           data: { stock: { increment: item.quantity } },
         });
       }
+
+      await registerCashMovement(tx, { sale, type: 'RETURN', amount: Number(sale.total), userId, description: 'Anulación de venta' });
 
       return tx.sale.update({
         where: { id },
@@ -229,6 +245,8 @@ export const saleService = {
           },
         },
       });
+
+      await registerCashMovement(tx, { sale, type: 'RETURN', amount: total, userId, description: 'Devolución de venta' });
 
       return tx.sale.update({
         where: { id: saleId },

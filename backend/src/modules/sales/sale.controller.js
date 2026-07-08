@@ -25,7 +25,7 @@ export const saleController = {
 
   async cancel(req, res, next) {
     try {
-      const data = await saleService.cancel(Number(req.params.id));
+      const data = await saleService.cancel(Number(req.params.id), req.user.sub);
       res.json({ success: true, data });
     } catch (err) { next(err); }
   },

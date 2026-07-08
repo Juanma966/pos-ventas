@@ -1,5 +1,19 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-08 — Fase 9 completa: caja
+
+**Agregado:**
+
+- Modelos `CashSession` y `CashMovement` + enums `CashSessionStatus` (OPEN/CLOSED) y `CashMovementType` (SALE/RETURN/INCOME/EXPENSE) en Prisma + migración `20260708183728_caja`
+- Backend: módulo `cash` (`cash.service.js`, `cash.controller.js`, `cash.routes.js`) en `/api/cash` — `open`, `close` (arqueo: esperado vs contado + diferencia), `addMovement` (ingreso/egreso), `current` (sesión abierta con balance calculado) y `sessions` (historial). Una sola caja abierta a la vez
+- Integración con ventas: dentro de la transacción de la venta, si el pago es EFECTIVO y hay caja abierta se crea un movimiento `SALE`; anulaciones y devoluciones en efectivo crean un movimiento `RETURN` (egreso)
+- Frontend: `cashService.js`, hook `useCash.js`, y `pages/cash/CashPage.jsx` con apertura, `SessionSummary` (KPIs), `MovementsTable`, `MovementFormModal` y `CloseSessionModal` (arqueo con diferencia en vivo)
+- Ruta `/caja` conectada (reemplaza el `PagePlaceholder`)
+
+Salda la deuda de integración de Ventas con Caja.
+
+---
+
 ## 2026-07-08 — Fase 8C completa: devoluciones
 
 **Agregado:**

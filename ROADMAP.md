@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 8 completas (8A POS + 8B ticket + 8C devoluciones). Fase 9 (Caja) es la siguiente.**
+Estado general: **Fases 1 a 9 completas. Fase 10 (Inventario) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -95,14 +95,16 @@ Estado general: **Fases 1 a 8 completas (8A POS + 8B ticket + 8C devoluciones). 
 ### Pendiente de integración
 
 - [ ] Múltiples métodos de pago (pago dividido) — mejora futura
-- [ ] Asociar venta a una caja abierta (requiere Fase 9 — Caja)
+- [x] Asociar venta a una caja abierta (resuelto en Fase 9 — Caja)
 
 ## Fase 9 — Caja
 
-- [ ] Apertura
-- [ ] Cierre
-- [ ] Arqueo
-- [ ] Movimientos
+- [x] Apertura con monto inicial (una sola caja abierta a la vez)
+- [x] Movimientos manuales (ingreso / egreso)
+- [x] Ventas en efectivo registran movimiento automático en la caja abierta
+- [x] Anulaciones y devoluciones en efectivo registran egreso automático
+- [x] Cierre con arqueo (efectivo contado vs esperado + diferencia)
+- [x] Pantalla de caja: apertura, resumen con KPIs, listado de movimientos, cierre
 
 ## Fase 10 — Inventario
 
