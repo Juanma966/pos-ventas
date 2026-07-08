@@ -5,4 +5,5 @@ export const saleService = {
   getById: (id) => api.get(`/sales/${id}`).then((r) => r.data.data),
   create: (data) => api.post('/sales', data).then((r) => r.data.data),
   cancel: (id) => api.post(`/sales/${id}/cancel`).then((r) => r.data.data),
+  createReturn: (id, data) => api.post(`/sales/${id}/return`, data).then((r) => r.data.data),
 };

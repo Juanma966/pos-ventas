@@ -10,5 +10,6 @@ router.get('/', saleController.getAll);
 router.get('/:id', saleController.getById);
 router.post('/', saleController.create);
 router.post('/:id/cancel', saleController.cancel);
+router.post('/:id/return', saleController.createReturn);
 
 export default router;

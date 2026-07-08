@@ -12,6 +12,10 @@ const saleInclude = {
     include: { product: { select: { id: true, name: true, barcode: true } } },
     orderBy: { id: 'asc' },
   },
+  returns: {
+    include: { items: true, user: { select: { id: true, name: true } } },
+    orderBy: { id: 'asc' },
+  },
 };
 
 const listInclude = {
@@ -123,8 +127,8 @@ export const saleService = {
 
   async cancel(id) {
     const sale = await saleService.findById(id);
-    if (sale.status === 'CANCELLED') {
-      throw new AppError('La venta ya está anulada');
+    if (sale.status !== 'COMPLETED') {
+      throw new AppError('Solo se pueden anular ventas completadas (sin devoluciones)');
     }
 
     // Transacción: repone el stock de cada producto y marca la venta como anulada.
@@ -139,6 +143,96 @@ export const saleService = {
       return tx.sale.update({
         where: { id },
         data: { status: 'CANCELLED' },
+        include: saleInclude,
+      });
+    });
+  },
+
+  async createReturn(saleId, data, userId) {
+    const sale = await saleService.findById(saleId);
+    if (sale.status === 'CANCELLED') {
+      throw new AppError('No se puede devolver una venta anulada');
+    }
+    if (sale.status === 'RETURNED') {
+      throw new AppError('La venta ya fue devuelta por completo');
+    }
+
+    if (!Array.isArray(data.items) || data.items.length === 0) {
+      throw new AppError('Debe indicar al menos un ítem a devolver');
+    }
+
+    // Cantidad ya devuelta por cada saleItem (sumando devoluciones previas).
+    const alreadyReturned = new Map();
+    for (const ret of sale.returns) {
+      for (const ri of ret.items) {
+        alreadyReturned.set(ri.saleItemId, (alreadyReturned.get(ri.saleItemId) || 0) + ri.quantity);
+      }
+    }
+
+    const saleItemMap = new Map(sale.items.map((i) => [i.id, i]));
+
+    const returnItems = data.items
+      .map((item) => {
+        const saleItemId = Number(item.saleItemId);
+        const quantity = Number(item.quantity);
+        const saleItem = saleItemMap.get(saleItemId);
+
+        if (!saleItem) throw new AppError('Ítem de venta inválido');
+        if (!Number.isInteger(quantity) || quantity < 0) {
+          throw new AppError('Cantidad a devolver inválida');
+        }
+        if (quantity === 0) return null;
+
+        const returnable = saleItem.quantity - (alreadyReturned.get(saleItemId) || 0);
+        if (quantity > returnable) {
+          throw new AppError(`No se puede devolver más de lo vendido (disponible: ${returnable})`);
+        }
+
+        const price = Number(saleItem.price);
+        return { saleItemId, productId: saleItem.productId, quantity, subtotal: Number((price * quantity).toFixed(2)) };
+      })
+      .filter(Boolean);
+
+    if (returnItems.length === 0) {
+      throw new AppError('Debe indicar al menos un ítem a devolver');
+    }
+
+    const total = Number(returnItems.reduce((acc, i) => acc + i.subtotal, 0).toFixed(2));
+
+    // ¿La venta queda totalmente devuelta? (unidades devueltas == unidades vendidas)
+    const totalSold = sale.items.reduce((acc, i) => acc + i.quantity, 0);
+    const totalReturnedPrev = [...alreadyReturned.values()].reduce((acc, q) => acc + q, 0);
+    const totalReturnedNow = returnItems.reduce((acc, i) => acc + i.quantity, 0);
+    const fullyReturned = totalReturnedPrev + totalReturnedNow >= totalSold;
+
+    // Transacción: repone stock de lo devuelto, registra la devolución y actualiza el estado.
+    return prisma.$transaction(async (tx) => {
+      for (const item of returnItems) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stock: { increment: item.quantity } },
+        });
+      }
+
+      await tx.saleReturn.create({
+        data: {
+          saleId,
+          userId,
+          total,
+          reason: data.reason || null,
+          items: {
+            create: returnItems.map((i) => ({
+              saleItemId: i.saleItemId,
+              quantity: i.quantity,
+              subtotal: i.subtotal,
+            })),
+          },
+        },
+      });
+
+      return tx.sale.update({
+        where: { id: saleId },
+        data: { status: fullyReturned ? 'RETURNED' : 'PARTIALLY_RETURNED' },
         include: saleInclude,
       });
     });

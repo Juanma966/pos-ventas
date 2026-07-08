@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 
 import Box from '@mui/material/Box';
-import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import Skeleton from '@mui/material/Skeleton';
 import Table from '@mui/material/Table';
@@ -17,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 import formatCurrency from 'utils/formatCurrency';
+import SaleStatusChip from './SaleStatusChip';
 
 const PAYMENT_LABELS = { EFECTIVO: 'Efectivo', TARJETA: 'Tarjeta', TRANSFERENCIA: 'Transferencia' };
 const formatDateTime = (value) => new Date(value).toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
@@ -80,11 +80,7 @@ export default function SalesTable({ sales, total, page, rowsPerPage, isLoading,
                 <TableCell>{PAYMENT_LABELS[sale.paymentMethod] ?? sale.paymentMethod}</TableCell>
                 <TableCell align="right">{formatCurrency(sale.total)}</TableCell>
                 <TableCell align="center">
-                  <Chip
-                    label={sale.status === 'COMPLETED' ? 'Completada' : 'Anulada'}
-                    color={sale.status === 'COMPLETED' ? 'success' : 'default'}
-                    size="small"
-                  />
+                  <SaleStatusChip status={sale.status} />
                 </TableCell>
                 <TableCell align="center">
                   <Tooltip title="Ver detalle">

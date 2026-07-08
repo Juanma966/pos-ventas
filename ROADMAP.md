@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 7 completas. Fases 8A (POS core) y 8B (ticket) completas; falta 8C (devoluciones).**
+Estado general: **Fases 1 a 8 completas (8A POS + 8B ticket + 8C devoluciones). Fase 9 (Caja) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -83,9 +83,14 @@ Estado general: **Fases 1 a 7 completas. Fases 8A (POS core) y 8B (ticket) compl
 - [x] Auto-impresión al confirmar una venta en el POS
 - [x] Datos del negocio en constante `BUSINESS` (placeholder hasta Fase 12 — Configuración)
 
-### 8C — Devoluciones (pendiente)
+### 8C — Devoluciones (completo)
 
-- [ ] Devolución total / parcial de una venta
+- [x] Devolución parcial o total de una venta (por ítem y cantidad)
+- [x] Tope por ítem = vendido − ya devuelto
+- [x] Reposición de stock de lo devuelto en transacción
+- [x] Estados nuevos `PARTIALLY_RETURNED` / `RETURNED` según lo devuelto
+- [x] "Anular" limitado a ventas `COMPLETED`; convive con "Devolución"
+- [x] Modal de devolución + resumen de devoluciones en el detalle de venta
 
 ### Pendiente de integración
 

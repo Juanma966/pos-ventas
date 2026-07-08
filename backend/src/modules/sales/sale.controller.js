@@ -29,4 +29,11 @@ export const saleController = {
       res.json({ success: true, data });
     } catch (err) { next(err); }
   },
+
+  async createReturn(req, res, next) {
+    try {
+      const data = await saleService.createReturn(Number(req.params.id), req.body, req.user.sub);
+      res.status(201).json({ success: true, data });
+    } catch (err) { next(err); }
+  },
 };

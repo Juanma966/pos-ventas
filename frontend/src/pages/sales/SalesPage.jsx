@@ -31,6 +31,8 @@ export default function SalesPage() {
   const [selectedSale, setSelectedSale] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [isReturning, setIsReturning] = useState(false);
+  const [returnError, setReturnError] = useState('');
 
   const { sales, total, isLoading, mutate } = useSales({
     search,
@@ -61,6 +63,23 @@ export default function SalesPage() {
       // el modal permanece abierto; feedback de error en mejora futura
     } finally {
       setIsCancelling(false);
+    }
+  };
+
+  // Devuelve true si la devolución se registró (para que el modal se cierre).
+  const handleReturn = async (id, payload) => {
+    setIsReturning(true);
+    setReturnError('');
+    try {
+      const updated = await saleService.createReturn(id, payload);
+      setSelectedSale(updated);
+      await mutate();
+      return true;
+    } catch (err) {
+      setReturnError(err.response?.data?.message ?? 'No se pudo registrar la devolución');
+      return false;
+    } finally {
+      setIsReturning(false);
     }
   };
 
@@ -113,9 +132,12 @@ export default function SalesPage() {
       <SaleDetailModal
         open={modalOpen}
         sale={selectedSale}
-        onClose={() => { setModalOpen(false); setSelectedSale(null); }}
+        onClose={() => { setModalOpen(false); setSelectedSale(null); setReturnError(''); }}
         onCancelSale={handleCancelSale}
         isCancelling={isCancelling}
+        onReturn={handleReturn}
+        isReturning={isReturning}
+        returnError={returnError}
       />
     </MainCard>
   );

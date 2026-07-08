@@ -1,5 +1,17 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-08 — Fase 8C completa: devoluciones
+
+**Agregado:**
+
+- Modelos `SaleReturn` y `SaleReturnItem` en Prisma + estados `PARTIALLY_RETURNED` / `RETURNED` en el enum `SaleStatus` + migración `20260708182327_devoluciones`
+- Backend: `saleService.createReturn()` (transaccional) valida el tope por ítem (vendido − ya devuelto), repone stock de lo devuelto, registra la devolución y recalcula el estado de la venta; `cancel()` ahora solo permite anular ventas `COMPLETED`. Endpoint `POST /api/sales/:id/return`. `findById` incluye las devoluciones
+- Frontend: `ReturnFormModal` (selección de ítems y cantidades a devolver, motivo, monto a reintegrar), `SaleStatusChip` reutilizable (4 estados), botón "Devolución" y resumen de devoluciones en `SaleDetailModal`; `saleService.createReturn`
+
+Cierra el módulo de Ventas (Fase 8). Anular (revierte venta completa) y Devolución (parcial/total con registro) conviven con semánticas distintas.
+
+---
+
 ## 2026-07-06 — Fase 8B completa: impresión de ticket
 
 **Agregado:**
