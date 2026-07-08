@@ -19,7 +19,11 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 
+import PrintOutlinedIcon from '@mui/icons-material/PrintOutlined';
+
 import formatCurrency from 'utils/formatCurrency';
+import usePrintTicket from 'hooks/usePrintTicket';
+import Ticket from './Ticket';
 
 const PAYMENT_LABELS = { EFECTIVO: 'Efectivo', TARJETA: 'Tarjeta', TRANSFERENCIA: 'Transferencia' };
 const formatDateTime = (value) => new Date(value).toLocaleString('es-AR');
@@ -38,6 +42,7 @@ Field.propTypes = { label: PropTypes.string.isRequired, children: PropTypes.node
 
 export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isCancelling }) {
   const [confirmCancel, setConfirmCancel] = useState(false);
+  const { ticketRef, printTicket } = usePrintTicket();
 
   const handleClose = () => {
     setConfirmCancel(false);
@@ -112,6 +117,7 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 2 }}>
         <Button onClick={handleClose} disabled={isCancelling}>Cerrar</Button>
+        <Button startIcon={<PrintOutlinedIcon />} onClick={printTicket}>Imprimir ticket</Button>
         {sale.status === 'COMPLETED' && (
           confirmCancel ? (
             <Button color="error" variant="contained" onClick={() => onCancelSale(sale.id)} disabled={isCancelling}>
@@ -124,6 +130,11 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
           )
         )}
       </DialogActions>
+
+      {/* Ticket oculto en pantalla; react-to-print lo copia a un iframe aislado para imprimir */}
+      <Box sx={{ display: 'none' }}>
+        <Ticket ref={ticketRef} sale={sale} />
+      </Box>
     </Dialog>
   );
 }

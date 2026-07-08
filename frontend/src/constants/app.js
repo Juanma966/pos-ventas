@@ -1,6 +1,16 @@
 export const APP_NAME = 'POS Ventas';
 export const APP_VERSION = '1.0.0';
 
+// Datos del negocio para el ticket. Placeholder hasta la Fase 12 (Configuración),
+// donde pasarán a administrarse desde la base de datos.
+export const BUSINESS = {
+  name: 'POS Ventas',
+  address: 'Av. Siempre Viva 123, Buenos Aires',
+  phone: '(011) 4000-0000',
+  taxId: '30-00000000-0',
+  footer: '¡Gracias por su compra!'
+};
+
 export const CURRENCY = {
   code: 'ARS',
   symbol: '$',

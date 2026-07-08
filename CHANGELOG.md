@@ -1,5 +1,21 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-06 — Fase 8B completa: impresión de ticket
+
+**Agregado:**
+
+- `pages/sales/components/Ticket.jsx` — comprobante reutilizable estilo 80mm (cabecera del negocio, ítems, subtotal/descuento/total, método de pago, marca de anulada) con `forwardRef`
+- Hook `usePrintTicket.js` sobre `react-to-print` (v3), con `pageStyle` a 80mm
+- Botón "Imprimir ticket" en `SaleDetailModal` (historial de ventas)
+- Auto-impresión del ticket al confirmar una venta en el POS
+- Constante `BUSINESS` en `constants/app.js` (nombre, dirección, CUIT, teléfono, pie) — placeholder hasta la Fase 12 (Configuración)
+
+**Dependencias:**
+
+- `react-to-print@3.3.0`
+
+---
+
 ## 2026-07-06 — Fase 8A completa: POS core (ventas)
 
 **Agregado:**

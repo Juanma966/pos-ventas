@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 7 completas. Fase 8A (POS core) completa; faltan 8B (ticket) y 8C (devoluciones).**
+Estado general: **Fases 1 a 7 completas. Fases 8A (POS core) y 8B (ticket) completas; falta 8C (devoluciones).**
 
 ## Fase 1 — Base del proyecto
 
@@ -75,9 +75,13 @@ Estado general: **Fases 1 a 7 completas. Fase 8A (POS core) completa; faltan 8B 
 - [x] Listado de ventas con filtro por estado, detalle y anulación (repone stock)
 - [x] Impuestos: precio tratado como final (IVA incluido); discriminación diferida a Fase 12
 
-### 8B — Impresión de ticket (pendiente)
+### 8B — Impresión de ticket (completo)
 
-- [ ] Vista imprimible del ticket
+- [x] Componente `Ticket` reutilizable (comprobante estilo 80mm) con datos del negocio
+- [x] Impresión vía `react-to-print` (hook `usePrintTicket`)
+- [x] Botón "Imprimir ticket" en el detalle de venta (historial)
+- [x] Auto-impresión al confirmar una venta en el POS
+- [x] Datos del negocio en constante `BUSINESS` (placeholder hasta Fase 12 — Configuración)
 
 ### 8C — Devoluciones (pendiente)
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -10,7 +10,9 @@ import Typography from '@mui/material/Typography';
 import MainCard from 'components/cards/MainCard';
 import useCart from 'hooks/useCart';
 import useCustomers from 'hooks/useCustomers';
+import usePrintTicket from 'hooks/usePrintTicket';
 import { saleService } from 'services/saleService';
+import Ticket from 'pages/sales/components/Ticket';
 import ProductSearchGrid from './components/ProductSearchGrid';
 import Cart from './components/Cart';
 import CheckoutPanel from './components/CheckoutPanel';
@@ -24,6 +26,14 @@ export default function POSPage() {
   const [customerId, setCustomerId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [feedback, setFeedback] = useState(null); // { severity, message }
+  const [lastSale, setLastSale] = useState(null);
+
+  const { ticketRef, printTicket } = usePrintTicket();
+
+  // Al registrarse una venta, imprime su ticket automáticamente.
+  useEffect(() => {
+    if (lastSale) printTicket();
+  }, [lastSale, printTicket]);
 
   const resetSale = () => {
     clear();
@@ -43,7 +53,8 @@ export default function POSPage() {
         items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity })),
       };
       const sale = await saleService.create(payload);
-      setFeedback({ severity: 'success', message: `Venta #${sale.id} registrada correctamente` });
+      setLastSale(sale);
+      setFeedback({ severity: 'success', message: `Venta #${sale.id} registrada — imprimiendo ticket` });
       resetSale();
     } catch (err) {
       setFeedback({ severity: 'error', message: err.response?.data?.message ?? 'No se pudo registrar la venta' });
@@ -103,6 +114,11 @@ export default function POSPage() {
           </Alert>
         ) : undefined}
       </Snackbar>
+
+      {/* Ticket oculto de la última venta; react-to-print lo copia a un iframe para imprimir */}
+      <Box sx={{ display: 'none' }}>
+        <Ticket ref={ticketRef} sale={lastSale} />
+      </Box>
     </>
   );
 }
