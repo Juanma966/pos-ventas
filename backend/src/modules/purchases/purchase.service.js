@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { AppError } from '../../middleware/error.middleware.js';
+import { recordInventoryMovement } from '../inventory/inventory.service.js';
 
 const prisma = new PrismaClient();
 
@@ -119,22 +120,30 @@ export const purchaseService = {
     });
   },
 
-  async receive(id) {
+  async receive(id, userId) {
     const purchase = await purchaseService.findById(id);
     if (purchase.status !== 'PENDING') {
       throw new AppError('Solo se pueden recibir compras pendientes');
     }
 
     // Transacción: sube stock y actualiza el costo (último costo) de cada producto,
-    // luego marca la orden como recibida.
+    // registra el movimiento de inventario, y marca la orden como recibida.
     return prisma.$transaction(async (tx) => {
       for (const item of purchase.items) {
-        await tx.product.update({
+        const updated = await tx.product.update({
           where: { id: item.productId },
           data: {
             stock: { increment: item.quantity },
             cost: item.cost,
           },
+        });
+        await recordInventoryMovement(tx, {
+          productId: item.productId,
+          userId,
+          type: 'PURCHASE',
+          quantity: item.quantity,
+          stockAfter: updated.stock,
+          reason: `Recepción compra OC-${String(id).padStart(4, '0')}`,
         });
       }
 

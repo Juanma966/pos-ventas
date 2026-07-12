@@ -32,7 +32,7 @@ export const purchaseController = {
 
   async receive(req, res, next) {
     try {
-      const data = await purchaseService.receive(Number(req.params.id));
+      const data = await purchaseService.receive(Number(req.params.id), req.user.sub);
       res.json({ success: true, data });
     } catch (err) { next(err); }
   },

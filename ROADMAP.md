@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 9 completas. Fase 10 (Inventario) es la siguiente.**
+Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) es la siguiente.**
 
 ## Fase 1 — Base del proyecto
 
@@ -108,10 +108,11 @@ Estado general: **Fases 1 a 9 completas. Fase 10 (Inventario) es la siguiente.**
 
 ## Fase 10 — Inventario
 
-- [ ] Entradas
-- [ ] Salidas
-- [ ] Ajustes
-- [ ] Transferencias
+- [x] Kardex: libro de movimientos de inventario por producto (con filtros por producto/tipo y paginación)
+- [x] Ajustes manuales: entrada (+), salida (−) y ajuste por conteo (stock absoluto), con motivo
+- [x] Registro automático de movimientos en compras (recepción), ventas, anulaciones y devoluciones
+- [x] Snapshot de stock resultante (`stockAfter`) en cada movimiento
+- [ ] Transferencias entre sucursales/depósitos (requiere Fase 12 — Configuración)
 
 ## Fase 11 — Reportes
 

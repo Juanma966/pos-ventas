@@ -1,5 +1,19 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-12 — Fase 10 completa: inventario (kardex + ajustes)
+
+**Agregado:**
+
+- Modelo `InventoryMovement` + enum `InventoryMovementType` (PURCHASE/SALE/SALE_CANCEL/RETURN/ADJUSTMENT) en Prisma, con `stockAfter` (snapshot) y motivo + migración `20260712185805_inventario`
+- Backend: módulo `inventory` en `/api/inventory` — `GET /` (kardex con filtros por producto/tipo y paginación) y `POST /adjustments` (ajuste manual entrada/salida/conteo, transaccional). Helper `recordInventoryMovement` reutilizable
+- Retrofit del kardex: `purchase.service.receive`, `sale.service.create/cancel/createReturn` ahora registran su movimiento de inventario dentro de sus transacciones (recepción, venta, anulación, devolución). `receive`/`cancel` reciben `userId`
+- Frontend: `inventoryService` + hook `useInventory`, y páginas en `pages/inventory/` — `InventoryPage` (kardex con filtros), `MovementsTable`, `AdjustmentModal` (entrada/salida/conteo con vista previa del stock resultante) y `MovementTypeChip`
+- Ruta `/inventario` conectada (reemplaza el `PagePlaceholder`)
+
+Transferencias entre depósitos quedan diferidas a la Fase 12 (requieren sucursales).
+
+---
+
 ## 2026-07-08 — Fase 9 completa: caja
 
 **Agregado:**

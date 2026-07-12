@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 import { AppError } from '../../middleware/error.middleware.js';
 import { findOpenSession } from '../cash/cash.service.js';
+import { recordInventoryMovement } from '../inventory/inventory.service.js';
 
 const prisma = new PrismaClient();
 
@@ -127,9 +128,17 @@ export const saleService = {
       });
 
       for (const item of items) {
-        await tx.product.update({
+        const updated = await tx.product.update({
           where: { id: item.productId },
           data: { stock: { decrement: item.quantity } },
+        });
+        await recordInventoryMovement(tx, {
+          productId: item.productId,
+          userId,
+          type: 'SALE',
+          quantity: -item.quantity,
+          stockAfter: updated.stock,
+          reason: `Venta V-${String(sale.id).padStart(4, '0')}`,
         });
       }
 
@@ -148,9 +157,17 @@ export const saleService = {
     // Transacción: repone el stock de cada producto y marca la venta como anulada.
     return prisma.$transaction(async (tx) => {
       for (const item of sale.items) {
-        await tx.product.update({
+        const updated = await tx.product.update({
           where: { id: item.productId },
           data: { stock: { increment: item.quantity } },
+        });
+        await recordInventoryMovement(tx, {
+          productId: item.productId,
+          userId,
+          type: 'SALE_CANCEL',
+          quantity: item.quantity,
+          stockAfter: updated.stock,
+          reason: `Anulación venta V-${String(id).padStart(4, '0')}`,
         });
       }
 
@@ -224,9 +241,17 @@ export const saleService = {
     // Transacción: repone stock de lo devuelto, registra la devolución y actualiza el estado.
     return prisma.$transaction(async (tx) => {
       for (const item of returnItems) {
-        await tx.product.update({
+        const updated = await tx.product.update({
           where: { id: item.productId },
           data: { stock: { increment: item.quantity } },
+        });
+        await recordInventoryMovement(tx, {
+          productId: item.productId,
+          userId,
+          type: 'RETURN',
+          quantity: item.quantity,
+          stockAfter: updated.stock,
+          reason: `Devolución venta V-${String(saleId).padStart(4, '0')}`,
         });
       }
 

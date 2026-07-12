@@ -30,6 +30,7 @@ model User {
   saleReturns   SaleReturn[]
   cashSessions  CashSession[]
   cashMovements CashMovement[]
+  inventoryMovements InventoryMovement[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
@@ -119,6 +120,7 @@ model Product {
   brand       Brand?    @relation(fields: [brandId], references: [id])
   purchaseItems PurchaseItem[]
   saleItems   SaleItem[]
+  inventoryMovements InventoryMovement[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -288,4 +290,29 @@ model CashMovement {
 
   @@index([sessionId])
   @@index([saleId])
+}
+
+enum InventoryMovementType {
+  PURCHASE
+  SALE
+  SALE_CANCEL
+  RETURN
+  ADJUSTMENT
+}
+
+model InventoryMovement {
+  id         Int                   @id @default(autoincrement())
+  productId  Int
+  product    Product               @relation(fields: [productId], references: [id])
+  userId     Int
+  user       User                  @relation(fields: [userId], references: [id])
+  type       InventoryMovementType
+  quantity   Int
+  stockAfter Int
+  reason     String?
+  createdAt  DateTime              @default(now())
+
+  @@index([productId])
+  @@index([type])
+  @@index([createdAt])
 }
