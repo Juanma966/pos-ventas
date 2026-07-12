@@ -1,5 +1,17 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-12 — Fase 11B: reportes de compras y caja
+
+**Agregado:**
+
+- Backend: `GET /reports/purchases` (compras recibidas por fecha de recepción — total comprado, serie diaria, top proveedores, top productos) y `GET /reports/cash` (cierres de caja del período con esperado/contado/diferencia + totales de movimientos por tipo). Helpers `resolveRange` y `buildDailySeries` extraídos para reuso
+- Frontend: `ReportsPage` reorganizada en pestañas (Ventas / Compras / Caja) con rango de fechas compartido; nuevos `SalesReportTab`, `PurchasesReportTab`, `CashReportTab`, `CashSessionsTable` y `KpiCard`. Gráfico `DailySalesChart` generalizado a `DailyTotalChart` (reutilizado en ventas y compras)
+- Hooks `usePurchasesReport` y `useCashReport`; `reportService.getPurchases/getCash`
+
+Sin cambios de schema.
+
+---
+
 ## 2026-07-12 — Fase 11A: reporte de ventas + dashboard real
 
 **Agregado:**
