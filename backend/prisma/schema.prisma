@@ -31,6 +31,7 @@ model User {
   cashSessions  CashSession[]
   cashMovements CashMovement[]
   inventoryMovements InventoryMovement[]
+  auditLogs     AuditLog[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
@@ -327,6 +328,24 @@ model Company {
   ticketFooter String?
   updatedAt    DateTime @updatedAt
   createdAt    DateTime @default(now())
+}
+
+// Registro de auditoría: una fila por acción mutante (POST/PUT/PATCH/DELETE) del sistema.
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int?
+  user       User?    @relation(fields: [userId], references: [id])
+  action     String
+  entity     String
+  entityId   Int?
+  method     String
+  path       String
+  statusCode Int
+  createdAt  DateTime @default(now())
+
+  @@index([userId])
+  @@index([entity])
+  @@index([createdAt])
 }
 
 // Registro de sucursales. Por ahora sin stock/operaciones asociadas (mono-sucursal).

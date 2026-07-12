@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 11 completas (11 cierra con ventas, compras, caja e inventario; ganancias descartado). Fase 12 (Configuración) parcial: 12A empresa+usuarios y 12C sucursales completos.**
+Estado general: **Fases 1 a 11 y 13 completas. Fase 12 (Configuración) parcial: 12A empresa+usuarios y 12C sucursales completos (falta Impresoras).**
 
 ## Fase 1 — Base del proyecto
 
@@ -160,7 +160,9 @@ Estado general: **Fases 1 a 11 completas (11 cierra con ventas, compras, caja e 
 
 ## Fase 13 — Auditoría
 
-- [ ] Registro completo de acciones del sistema
+- [x] Registro automático de acciones mutantes (POST/PUT/PATCH/DELETE) vía middleware global — incluye intentos fallidos (ej. 403)
+- [x] Captura usuario, acción, entidad, id, método, ruta y status code
+- [x] Pantalla `/auditoria` (admin-only) con filtros por entidad y rango de fechas + paginación
 
 ## Fase 14 — Optimización
 

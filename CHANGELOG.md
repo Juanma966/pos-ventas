@@ -1,5 +1,18 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-12 — Fase 13 completa: auditoría
+
+**Agregado:**
+
+- Modelo `AuditLog` (usuario, acción, entidad, entityId, método, path, statusCode) + migración `20260712205142_auditoria`
+- Middleware global `auditLogger`: registra cada acción mutante (POST/PUT/PATCH/DELETE) de un usuario autenticado al finalizar la respuesta, derivando entidad/id/acción del path — **incluye intentos fallidos** (ej. 403/400). No bloquea el flujo (escritura async, tolerante a errores)
+- Backend: módulo `audit` en `/api/audit` (listado con filtros por usuario/entidad/acción/rango de fechas + paginación), restringido a admin
+- Frontend: página `/auditoria` (`AuditPage`) con filtros por entidad y fechas, item de menú "Auditoría" en Administración; `auditService` + hook `useAudit`
+
+Cierra la Fase 13. La captura es automática vía middleware, sin tocar la lógica de los módulos.
+
+---
+
 ## 2026-07-12 — Fase 11C: reporte de inventario (cierra Fase 11)
 
 **Agregado:**
