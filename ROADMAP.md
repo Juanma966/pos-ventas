@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) es la siguiente.**
+Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) en progreso: 11A (ventas + dashboard real) completo.**
 
 ## Fase 1 — Base del proyecto
 
@@ -116,11 +116,17 @@ Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) es la siguiente.**
 
 ## Fase 11 — Reportes
 
-- [ ] Ventas
-- [ ] Compras
-- [ ] Caja
-- [ ] Ganancias
-- [ ] Inventario
+### 11A — Ventas + Dashboard real (completo)
+
+- [x] Reporte de ventas por rango de fechas: KPIs (ventas, facturación bruta, neto, ticket promedio), serie diaria, por método de pago, top productos
+- [x] Dashboard conectado a datos reales de la API (reemplaza el mock)
+
+### Pendientes
+
+- [ ] Reporte de compras
+- [ ] Reporte de caja
+- [ ] Reporte de inventario
+- [ ] Ganancias / margen (requiere snapshot de costo en la venta — ver Fase 8)
 
 ## Fase 12 — Configuración
 

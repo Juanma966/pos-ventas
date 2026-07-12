@@ -14,6 +14,7 @@ const PurchaseFormPage = Loadable(lazy(() => import('pages/purchases/PurchaseFor
 const POSPage = Loadable(lazy(() => import('pages/pos/POSPage')));
 const SalesPage = Loadable(lazy(() => import('pages/sales/SalesPage')));
 const InventoryPage = Loadable(lazy(() => import('pages/inventory/InventoryPage')));
+const ReportsPage = Loadable(lazy(() => import('pages/reports/ReportsPage')));
 const CashPage = Loadable(lazy(() => import('pages/cash/CashPage')));
 
 const MainRoutes = {
@@ -43,7 +44,7 @@ const MainRoutes = {
     { path: 'caja', element: <CashPage /> },
     { path: 'inventario', element: <InventoryPage /> },
 
-    { path: 'reportes', element: <PagePlaceholder title="Reportes" /> },
+    { path: 'reportes', element: <ReportsPage /> },
     { path: 'configuracion', element: <PagePlaceholder title="Configuración" /> }
   ]
 };

@@ -1,5 +1,18 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-12 — Fase 11A: reporte de ventas + dashboard real
+
+**Agregado:**
+
+- Backend: módulo `reports` en `/api/reports` (sin cambios de schema). `GET /sales?from=&to=` devuelve KPIs (cantidad, facturación bruta, devoluciones, neto, ticket promedio), serie diaria, totales por método de pago y top 10 productos; `GET /dashboard` devuelve KPIs del día, serie mensual (año actual vs anterior) y últimas ventas
+- Frontend: `reportService` + hook `useSalesReport`, y páginas en `pages/reports/` — `ReportsPage` (filtro por rango de fechas, KPIs, gráficos ApexCharts de serie diaria y método de pago, tabla de top productos)
+- `useDashboard` ahora consume `/api/reports/dashboard` (reemplaza el mock); el dashboard muestra datos reales
+- Ruta `/reportes` conectada (reemplaza el `PagePlaceholder`)
+
+Primera etapa de reportes. Compras, caja, inventario y ganancias quedan pendientes (ganancias requiere snapshot de costo en la venta).
+
+---
+
 ## 2026-07-12 — Fase 10 completa: inventario (kardex + ajustes)
 
 **Agregado:**
