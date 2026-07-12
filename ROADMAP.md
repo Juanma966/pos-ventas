@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) parcial (11A ventas+dashboard, 11B compras+caja). Fase 12 (Configuración) parcial: 12A empresa+usuarios y 12C sucursales completos.**
+Estado general: **Fases 1 a 11 completas (11 cierra con ventas, compras, caja e inventario; ganancias descartado). Fase 12 (Configuración) parcial: 12A empresa+usuarios y 12C sucursales completos.**
 
 ## Fase 1 — Base del proyecto
 
@@ -127,10 +127,14 @@ Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) parcial (11A ventas
 - [x] Reporte de caja: cierres/arqueos del período (esperado vs contado, diferencia) + totales de movimientos por tipo
 - [x] Pantalla de reportes reorganizada en pestañas (Ventas / Compras / Caja) con rango de fechas compartido
 
-### Pendientes
+### 11C — Inventario (completo)
 
-- [ ] Reporte de inventario (movimientos / valorización de stock)
-- [ ] Ganancias / margen (requiere snapshot de costo en la venta — ver Fase 8)
+- [x] Reporte de inventario: valorización actual (unidades, valor a costo, valor a venta, bajo stock), movimientos del período por tipo y top productos por valor en stock
+- [x] Pestaña "Inventario" en la pantalla de reportes
+
+### Descartado
+
+- ~~Ganancias / margen~~ — fuera de alcance por decisión del proyecto (requería snapshot de costo en la venta).
 
 ## Fase 12 — Configuración
 

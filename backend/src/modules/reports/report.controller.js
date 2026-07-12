@@ -25,6 +25,14 @@ export const reportController = {
     } catch (err) { next(err); }
   },
 
+  async inventory(req, res, next) {
+    try {
+      const { from, to } = req.query;
+      const data = await reportService.inventoryReport({ from, to });
+      res.json({ success: true, data });
+    } catch (err) { next(err); }
+  },
+
   async dashboard(req, res, next) {
     try {
       const data = await reportService.dashboard();

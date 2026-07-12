@@ -183,6 +183,57 @@ export const reportService = {
     };
   },
 
+  // Reporte de inventario: valorización actual (snapshot) + movimientos del período.
+  async inventoryReport({ from, to } = {}) {
+    const { fromDate, toDate } = resolveRange(from, to);
+
+    const products = await prisma.product.findMany({
+      where: { active: true },
+      select: { id: true, name: true, stock: true, cost: true, price: true, minStock: true },
+    });
+
+    let totalStockUnits = 0;
+    let totalCostValue = 0;
+    let totalRetailValue = 0;
+    let lowStockCount = 0;
+    const valued = [];
+
+    for (const p of products) {
+      const cost = Number(p.cost);
+      const price = Number(p.price);
+      totalStockUnits += p.stock;
+      totalCostValue += p.stock * cost;
+      totalRetailValue += p.stock * price;
+      if (p.stock <= p.minStock) lowStockCount += 1;
+      valued.push({ productId: p.id, name: p.name, stock: p.stock, costValue: Number((p.stock * cost).toFixed(2)) });
+    }
+
+    // Movimientos del período agrupados por tipo (cantidad de movimientos + unidades netas).
+    const movements = await prisma.inventoryMovement.findMany({
+      where: { createdAt: { gte: fromDate, lte: toDate } },
+      select: { type: true, quantity: true },
+    });
+    const movementsByType = {};
+    for (const m of movements) {
+      if (!movementsByType[m.type]) movementsByType[m.type] = { type: m.type, count: 0, netQuantity: 0 };
+      movementsByType[m.type].count += 1;
+      movementsByType[m.type].netQuantity += m.quantity;
+    }
+
+    return {
+      range: { from: ymd(fromDate), to: ymd(toDate) },
+      valuation: {
+        totalProducts: products.length,
+        totalStockUnits,
+        totalCostValue: Number(totalCostValue.toFixed(2)),
+        totalRetailValue: Number(totalRetailValue.toFixed(2)),
+        lowStockCount,
+      },
+      topByValue: valued.sort((a, b) => b.costValue - a.costValue).slice(0, 10),
+      movementsByType: Object.values(movementsByType),
+    };
+  },
+
   // Datos del dashboard con la misma forma que consumía el mock del frontend.
   async dashboard() {
     const now = new Date();

@@ -1,5 +1,16 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-12 — Fase 11C: reporte de inventario (cierra Fase 11)
+
+**Agregado:**
+
+- Backend: `GET /reports/inventory` — valorización actual del stock (unidades, valor a costo Σ stock×costo, valor a venta Σ stock×precio, productos bajo stock), movimientos del período agrupados por tipo (cantidad + unidades netas) y top productos por valor en stock. Sin cambios de schema
+- Frontend: pestaña "Inventario" en `ReportsPage` (`InventoryReportTab`), `reportService.getInventory` + hook `useInventoryReport`
+
+Con esto se cierra la Fase 11 (Reportes: ventas, compras, caja, inventario). **Ganancias/margen quedó descartado** por decisión del proyecto (requería snapshot de costo en la venta).
+
+---
+
 ## 2026-07-12 — Fase 12C: sucursales (registro/CRUD)
 
 **Agregado:**

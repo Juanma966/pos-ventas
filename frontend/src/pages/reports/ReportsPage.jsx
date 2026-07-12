@@ -10,6 +10,7 @@ import MainCard from 'components/cards/MainCard';
 import SalesReportTab from './components/SalesReportTab';
 import PurchasesReportTab from './components/PurchasesReportTab';
 import CashReportTab from './components/CashReportTab';
+import InventoryReportTab from './components/InventoryReportTab';
 
 const ymd = (d) => d.toISOString().slice(0, 10);
 const today = new Date();
@@ -36,12 +37,14 @@ export default function ReportsPage() {
           <Tab label="Ventas" />
           <Tab label="Compras" />
           <Tab label="Caja" />
+          <Tab label="Inventario" />
         </Tabs>
       </MainCard>
 
       {tab === 0 && <SalesReportTab from={from} to={to} />}
       {tab === 1 && <PurchasesReportTab from={from} to={to} />}
       {tab === 2 && <CashReportTab from={from} to={to} />}
+      {tab === 3 && <InventoryReportTab from={from} to={to} />}
     </Stack>
   );
 }
