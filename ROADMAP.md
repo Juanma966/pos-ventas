@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) parcial (11A ventas+dashboard, 11B compras+caja). Fase 12 (Configuración) parcial: 12A empresa + usuarios completo.**
+Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) parcial (11A ventas+dashboard, 11B compras+caja). Fase 12 (Configuración) parcial: 12A empresa+usuarios y 12C sucursales completos.**
 
 ## Fase 1 — Base del proyecto
 
@@ -141,11 +141,18 @@ Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) parcial (11A ventas
 - [x] ABM de usuarios con rol (crear, editar, activar/desactivar, reset de contraseña) — hash bcrypt
 - [x] Middleware `authorize('admin')`: Configuración y usuarios restringidos a admin (avance del pendiente de permisos)
 
+### 12C — Sucursales (completo)
+
+- [x] Registro de sucursales (CRUD): nombre, dirección, teléfono, activo — admin-only, en Configuración
+- [ ] Stock por sucursal + transferencias (epic futuro — requiere re-arquitectura mono→multi sucursal)
+
 ### Pendientes
 
-- [ ] Sucursales
-- [ ] Impuestos (alícuota IVA — destraba IVA discriminado y ganancias)
 - [ ] Impresoras
+
+### Descartado
+
+- ~~Impuestos (alícuota IVA / IVA discriminado)~~ — fuera de alcance por decisión del proyecto. El precio se mantiene como final (IVA incluido).
 
 ## Fase 13 — Auditoría
 

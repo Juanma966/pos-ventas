@@ -1,5 +1,17 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-12 — Fase 12C: sucursales (registro/CRUD)
+
+**Agregado:**
+
+- Modelo `Branch` (nombre, dirección, teléfono, activo) + migración `20260712202258_sucursales`
+- Backend: módulo `branches` en `/api/branches` (CRUD), restringido a admin vía `authorize('admin')`
+- Frontend: pestaña "Sucursales" en `ConfigPage` con `BranchesSection` (tabla + borrado con confirmación) y `BranchFormModal` (RHF+Zod); `branchService` + hook `useBranches`
+
+Registro de sucursales como configuración. El stock por sucursal y las transferencias de inventario quedan como epic futuro (requieren re-arquitectura mono→multi sucursal).
+
+---
+
 ## 2026-07-12 — Fase 12A: configuración (empresa + usuarios)
 
 **Agregado:**

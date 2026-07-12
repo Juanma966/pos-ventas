@@ -328,3 +328,16 @@ model Company {
   updatedAt    DateTime @updatedAt
   createdAt    DateTime @default(now())
 }
+
+// Registro de sucursales. Por ahora sin stock/operaciones asociadas (mono-sucursal).
+model Branch {
+  id        Int      @id @default(autoincrement())
+  name      String
+  address   String?
+  phone     String?
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+}
