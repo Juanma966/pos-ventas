@@ -17,6 +17,8 @@ import saleRoutes from './modules/sales/sale.routes.js';
 import cashRoutes from './modules/cash/cash.routes.js';
 import inventoryRoutes from './modules/inventory/inventory.routes.js';
 import reportRoutes from './modules/reports/report.routes.js';
+import settingsRoutes from './modules/settings/settings.routes.js';
+import userRoutes from './modules/users/user.routes.js';
 
 const app = express();
 
@@ -41,6 +43,8 @@ app.use('/api/sales', saleRoutes);
 app.use('/api/cash', cashRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/users', userRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

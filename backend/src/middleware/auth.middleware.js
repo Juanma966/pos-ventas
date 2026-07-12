@@ -18,3 +18,13 @@ export function authenticate(req, res, next) {
     next(new AppError('Token inválido o expirado', 401));
   }
 }
+
+// Restringe el acceso a los roles indicados (debe ir después de authenticate).
+export function authorize(...roles) {
+  return (req, _res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      return next(new AppError('No tenés permiso para esta acción', 403));
+    }
+    next();
+  };
+}

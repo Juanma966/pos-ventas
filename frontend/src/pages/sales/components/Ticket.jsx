@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import { forwardRef } from 'react';
 
 import { BUSINESS } from 'constants/app';
+import useCompany from 'hooks/useCompany';
 import formatCurrency from 'utils/formatCurrency';
 
 const PAYMENT_LABELS = { EFECTIVO: 'Efectivo', TARJETA: 'Tarjeta', TRANSFERENCIA: 'Transferencia' };
@@ -19,15 +20,26 @@ const styles = {
 };
 
 const Ticket = forwardRef(function Ticket({ sale }, ref) {
+  const { company } = useCompany();
+
   if (!sale) return null;
+
+  // Datos de la empresa desde la config; si aún no cargó, usa el placeholder.
+  const biz = {
+    name: company?.name ?? BUSINESS.name,
+    address: company?.address ?? BUSINESS.address,
+    phone: company?.phone ?? BUSINESS.phone,
+    taxId: company?.taxId ?? BUSINESS.taxId,
+    footer: company?.ticketFooter ?? BUSINESS.footer,
+  };
 
   return (
     <div ref={ref} style={styles.ticket}>
       <div style={styles.center}>
-        <div style={{ ...styles.bold, fontSize: '14px' }}>{BUSINESS.name}</div>
-        <div style={styles.muted}>{BUSINESS.address}</div>
-        <div style={styles.muted}>Tel: {BUSINESS.phone}</div>
-        <div style={styles.muted}>CUIT: {BUSINESS.taxId}</div>
+        <div style={{ ...styles.bold, fontSize: '14px' }}>{biz.name}</div>
+        {biz.address && <div style={styles.muted}>{biz.address}</div>}
+        {biz.phone && <div style={styles.muted}>Tel: {biz.phone}</div>}
+        {biz.taxId && <div style={styles.muted}>CUIT: {biz.taxId}</div>}
       </div>
 
       <hr style={styles.hr} />
@@ -64,7 +76,7 @@ const Ticket = forwardRef(function Ticket({ sale }, ref) {
 
       <hr style={styles.hr} />
 
-      <div style={{ ...styles.center, ...styles.muted }}>{BUSINESS.footer}</div>
+      {biz.footer && <div style={{ ...styles.center, ...styles.muted }}>{biz.footer}</div>}
     </div>
   );
 });

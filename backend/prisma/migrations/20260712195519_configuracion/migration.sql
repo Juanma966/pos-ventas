@@ -1,0 +1,13 @@
+-- CreateTable
+CREATE TABLE "Company" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "address" TEXT,
+    "phone" TEXT,
+    "taxId" TEXT,
+    "ticketFooter" TEXT,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Company_pkey" PRIMARY KEY ("id")
+);

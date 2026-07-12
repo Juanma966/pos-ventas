@@ -1,5 +1,19 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-12 — Fase 12A: configuración (empresa + usuarios)
+
+**Agregado:**
+
+- Modelo `Company` (fila única: nombre, dirección, CUIT, teléfono, pie de ticket) + migración `20260712195519_configuracion`
+- Middleware `authorize(...roles)`: autorización por rol (además de `authenticate`)
+- Backend: módulo `settings` (`GET /settings/company` para cualquier usuario; `PUT` solo admin) y módulo `users` (CRUD con roles, hash bcrypt, activar/desactivar, reset de contraseña) — todo `users` restringido a admin. No se exponen hashes de contraseña
+- Frontend: `ConfigPage` (`/configuracion`) con pestañas Empresa / Usuarios: `CompanySection` (form RHF+Zod), `UsersSection` (tabla + `UserFormModal`). Services `settingsService`/`userService` y hooks `useCompany`/`useUsers`/`useRoles`
+- El `Ticket` ahora toma los datos del negocio desde `useCompany` (fallback al placeholder mientras carga)
+
+Primer corte de la Fase 12. Sucursales, impuestos e impresoras quedan pendientes.
+
+---
+
 ## 2026-07-12 — Fase 11B: reportes de compras y caja
 
 **Agregado:**

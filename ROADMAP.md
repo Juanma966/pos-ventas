@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) en progreso: 11A (ventas + dashboard) y 11B (compras + caja) completos; falta inventario y ganancias.**
+Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) parcial (11A ventas+dashboard, 11B compras+caja). Fase 12 (Configuración) parcial: 12A empresa + usuarios completo.**
 
 ## Fase 1 — Base del proyecto
 
@@ -134,11 +134,18 @@ Estado general: **Fases 1 a 10 completas. Fase 11 (Reportes) en progreso: 11A (v
 
 ## Fase 12 — Configuración
 
-- [ ] Empresa
+### 12A — Empresa + Usuarios (completo)
+
+- [x] Datos del negocio (nombre, dirección, CUIT, teléfono, pie de ticket) editables desde Configuración
+- [x] Ticket conectado a los datos reales de la empresa (reemplaza el placeholder)
+- [x] ABM de usuarios con rol (crear, editar, activar/desactivar, reset de contraseña) — hash bcrypt
+- [x] Middleware `authorize('admin')`: Configuración y usuarios restringidos a admin (avance del pendiente de permisos)
+
+### Pendientes
+
 - [ ] Sucursales
-- [ ] Impuestos
+- [ ] Impuestos (alícuota IVA — destraba IVA discriminado y ganancias)
 - [ ] Impresoras
-- [ ] Usuarios
 
 ## Fase 13 — Auditoría
 
