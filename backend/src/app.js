@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 
 import { env } from './config/env.js';
 import { errorMiddleware } from './middleware/error.middleware.js';
-import { auditLogger } from './middleware/audit.middleware.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import categoryRoutes from './modules/categories/category.routes.js';
 import brandRoutes from './modules/brands/brand.routes.js';
@@ -21,7 +20,6 @@ import reportRoutes from './modules/reports/report.routes.js';
 import settingsRoutes from './modules/settings/settings.routes.js';
 import userRoutes from './modules/users/user.routes.js';
 import branchRoutes from './modules/branches/branch.routes.js';
-import auditRoutes from './modules/audit/audit.routes.js';
 
 const app = express();
 
@@ -33,9 +31,6 @@ app.use(cors({
 app.use(morgan(env.isDev ? 'dev' : 'combined'));
 app.use(express.json());
 app.use(cookieParser());
-
-// Auditoría: registra las acciones mutantes (se ejecuta al finalizar cada respuesta).
-app.use(auditLogger);
 
 // Rutas
 app.use('/api/auth', authRoutes);
@@ -52,7 +47,6 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/branches', branchRoutes);
-app.use('/api/audit', auditRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

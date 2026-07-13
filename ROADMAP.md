@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 11 y 13 completas. Fase 12 parcial (falta Impresoras). Fase 14 (Optimización) parcial: frontend (cache SWR + code-splitting) completo; falta optimización de consultas backend.**
+Estado general: **Fases 1 a 11 y 14 completas. Fase 12 parcial (falta Impresoras). Fase 13 (Auditoría) removida. En curso: nuevos módulos Gastos Fijos y Personal.**
 
 ## Fase 1 — Base del proyecto
 
@@ -158,18 +158,19 @@ Estado general: **Fases 1 a 11 y 13 completas. Fase 12 parcial (falta Impresoras
 
 - ~~Impuestos (alícuota IVA / IVA discriminado)~~ — fuera de alcance por decisión del proyecto. El precio se mantiene como final (IVA incluido).
 
-## Fase 13 — Auditoría
+## Fase 13 — Auditoría (removida)
 
-- [x] Registro automático de acciones mutantes (POST/PUT/PATCH/DELETE) vía middleware global — incluye intentos fallidos (ej. 403)
-- [x] Captura usuario, acción, entidad, id, método, ruta y status code
-- [x] Pantalla `/auditoria` (admin-only) con filtros por entidad y rango de fechas + paginación
+- ~~Registro de acciones del sistema (middleware + `/auditoria`)~~ — **implementada y luego removida** por decisión del proyecto (no aporta valor para un POS de comercio). Se eliminó el módulo, middleware, pantalla y la tabla `AuditLog`.
 
-## Fase 14 — Optimización
+## Fase 14 — Optimización (completa)
 
 - [x] Lazy loading (rutas con `lazy()` + `Loadable`)
 - [x] Cache: `SWRConfig` global (revalidateOnFocus off, deduping 5s, keepPreviousData, retry 2)
 - [x] Code-splitting de vendors en Vite (`manualChunks`): chunk principal de la app 811 KB → 263 KB; react/mui/charts/forms en chunks propios cacheables
-- [ ] Optimización de consultas backend (reportes agregan en JS; pendiente si el volumen crece)
+
+### Descartado
+
+- ~~Optimización de consultas backend~~ — el volumen es chico; agregar en JS anda bien. Se revisará solo si el volumen crece.
 
 ## Fase 15 — Producción
 

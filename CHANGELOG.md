@@ -1,5 +1,17 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-13 — Fase 14 cerrada + eliminación de Auditoría
+
+**Eliminado:**
+
+- Módulo de Auditoría completo (Fase 13): backend (`modules/audit`, `middleware/audit.middleware.js`, montajes en `app.js`), frontend (`pages/audit`, `useAudit`, `auditService`, item de menú y ruta `/auditoria`) y la tabla `AuditLog` (migración `20260713153550_eliminar_auditoria`). Motivo: no aporta valor para un POS de comercio.
+
+**Cambiado:**
+
+- Fase 14 cerrada: la optimización de consultas backend se descarta (volumen chico). Frontend (cache SWR + code-splitting) quedó de la entrega anterior.
+
+---
+
 ## 2026-07-13 — Fase 14 (parcial): optimización frontend
 
 **Cambiado:**
