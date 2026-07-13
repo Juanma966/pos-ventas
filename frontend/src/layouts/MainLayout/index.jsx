@@ -13,7 +13,6 @@ import Footer from './Footer';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import MainContentStyled from './MainContentStyled';
-import Customization from '../Customization';
 import Loader from 'components/Loader';
 import Breadcrumbs from 'components/extended/Breadcrumbs';
 
@@ -63,7 +62,6 @@ export default function MainLayout() {
           <Footer />
         </Box>
       </MainContentStyled>
-      <Customization />
     </Box>
   );
 }

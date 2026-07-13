@@ -10,7 +10,6 @@ import Box from '@mui/material/Box';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
 // project imports
-import MenuCard from './MenuCard';
 import MenuList from '../MenuList';
 import LogoSection from '../LogoSection';
 import MiniDrawerStyled from './MiniDrawerStyled';
@@ -41,12 +40,9 @@ function Sidebar() {
 
   const drawer = useMemo(() => {
     const drawerContent = (
-      <>
-        <MenuCard />
-        <Stack direction="row" sx={{ justifyContent: 'center', mb: 2 }}>
-          <Chip label={import.meta.env.VITE_APP_VERSION} size="small" color="default" />
-        </Stack>
-      </>
+      <Stack direction="row" sx={{ justifyContent: 'center', mb: 2 }}>
+        <Chip label={import.meta.env.VITE_APP_VERSION} size="small" color="default" />
+      </Stack>
     );
 
     let drawerSX = { paddingLeft: '0px', paddingRight: '0px', marginTop: '20px' };
