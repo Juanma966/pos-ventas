@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
-import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Divider from '@mui/material/Divider';
@@ -21,7 +20,6 @@ import Transitions from 'components/extended/Transitions';
 import useConfig from 'hooks/useConfig';
 import useAuth from 'hooks/useAuth';
 
-import User1 from 'assets/images/users/user-round.svg';
 import { IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
 
 export default function ProfileSection() {
@@ -58,15 +56,8 @@ export default function ProfileSection() {
           height: '48px',
           alignItems: 'center',
           borderRadius: '27px',
-          '& .MuiChip-label': { lineHeight: 0 }
+          '& .MuiChip-label': { lineHeight: 0, px: 1.5 }
         }}
-        icon={
-          <Avatar
-            src={User1}
-            alt="usuario"
-            sx={{ ...theme.typography.mediumAvatar, margin: '8px 0 8px 8px !important', cursor: 'pointer' }}
-          />
-        }
         label={<IconSettings stroke={1.5} size="24px" />}
         ref={anchorRef}
         aria-controls={open ? 'profile-menu' : undefined}
