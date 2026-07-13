@@ -1,5 +1,17 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-13 — Nuevo módulo: Personal (empleados)
+
+**Agregado:**
+
+- Modelos `Employee` y `EmployeeMovement` + enum `EmployeeMovementType` (ADELANTO/DESCUENTO/PAGO) + migración `20260713173804_personal`
+- Backend: módulo `employees` en `/api/employees` — CRUD de empleados + movimientos (`POST/DELETE /:id/movements`). El detalle calcula un `summary` (totales por tipo + "entregado neto" = adelantos + pagos − descuentos); el listado adjunta el neto por empleado. Empleados independientes de los Usuarios del sistema
+- Frontend: `employeeService`, hook `useEmployees`, página `/personal` (grupo Personas) con `EmployeeTable`, `EmployeeFormModal` y `EmployeeDetailModal` (ledger de movimientos + alta/baja + resumen)
+
+Ledger continuo (sueldo como referencia, sin liquidación mensual). Sin integración con Caja. Cierra la tanda de módulos adicionales (Gastos Fijos + Personal).
+
+---
+
 ## 2026-07-13 — Nuevo módulo: Gastos Fijos
 
 **Agregado:**

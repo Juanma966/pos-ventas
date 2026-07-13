@@ -185,6 +185,9 @@ Estado general: **Fases 1 a 11 y 14 completas. Fase 12 parcial (falta Impresoras
 
 ## Módulos adicionales (fuera del roadmap original)
 
+> Estado: Gastos Fijos y Personal completos.
+
+
 ### Gastos Fijos (completo)
 
 - [x] ABM de gastos fijos mensuales (nombre, categoría alquiler/servicio/crédito/otro, monto, activo)
@@ -193,10 +196,12 @@ Estado general: **Fases 1 a 11 y 14 completas. Fase 12 parcial (falta Impresoras
 - [x] Widget en el dashboard (total + desglose por categoría)
 - Sin integración con Caja (por decisión)
 
-### Personal (pendiente)
+### Personal (completo)
 
-- [ ] Empleados (separados de Usuarios): nombre, puesto, sueldo, activo
-- [ ] Movimientos por empleado (adelanto / descuento / pago) con saldo tipo ledger continuo
+- [x] Empleados (separados de Usuarios): nombre, puesto, sueldo, activo
+- [x] Movimientos por empleado (adelanto / descuento / pago) con nota
+- [x] Saldo tipo ledger continuo: "entregado neto" = adelantos + pagos − descuentos; sueldo como referencia
+- [x] Página `/personal` (grupo Personas) con listado + detalle (ledger + alta/baja de movimientos)
 
 ---
 

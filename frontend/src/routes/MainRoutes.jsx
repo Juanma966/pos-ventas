@@ -17,6 +17,7 @@ const InventoryPage = Loadable(lazy(() => import('pages/inventory/InventoryPage'
 const ReportsPage = Loadable(lazy(() => import('pages/reports/ReportsPage')));
 const ConfigPage = Loadable(lazy(() => import('pages/config/ConfigPage')));
 const ExpensesPage = Loadable(lazy(() => import('pages/expenses/ExpensesPage')));
+const EmployeesPage = Loadable(lazy(() => import('pages/employees/EmployeesPage')));
 const CashPage = Loadable(lazy(() => import('pages/cash/CashPage')));
 
 const MainRoutes = {
@@ -39,6 +40,7 @@ const MainRoutes = {
 
     { path: 'clientes', element: <CustomersPage /> },
     { path: 'proveedores', element: <SuppliersPage /> },
+    { path: 'personal', element: <EmployeesPage /> },
 
     { path: 'compras', element: <PurchasesPage /> },
     { path: 'compras/nueva', element: <PurchaseFormPage /> },

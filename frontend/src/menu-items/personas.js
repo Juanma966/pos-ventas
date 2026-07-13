@@ -1,4 +1,4 @@
-import { IconUsers, IconTruck } from '@tabler/icons-react';
+import { IconUsers, IconTruck, IconUserCog } from '@tabler/icons-react';
 
 const personas = {
   id: 'personas',
@@ -19,6 +19,14 @@ const personas = {
       type: 'item',
       url: '/proveedores',
       icon: IconTruck,
+      breadcrumbs: false
+    },
+    {
+      id: 'personal',
+      title: 'Personal',
+      type: 'item',
+      url: '/personal',
+      icon: IconUserCog,
       breadcrumbs: false
     }
   ]
