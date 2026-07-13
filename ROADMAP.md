@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 11 y 13 completas. Fase 12 (Configuración) parcial: 12A empresa+usuarios y 12C sucursales completos (falta Impresoras).**
+Estado general: **Fases 1 a 11 y 13 completas. Fase 12 parcial (falta Impresoras). Fase 14 (Optimización) parcial: frontend (cache SWR + code-splitting) completo; falta optimización de consultas backend.**
 
 ## Fase 1 — Base del proyecto
 
@@ -166,10 +166,10 @@ Estado general: **Fases 1 a 11 y 13 completas. Fase 12 (Configuración) parcial:
 
 ## Fase 14 — Optimización
 
-- [ ] Rendimiento
-- [ ] Lazy loading
-- [ ] Cache
-- [ ] Optimización de consultas
+- [x] Lazy loading (rutas con `lazy()` + `Loadable`)
+- [x] Cache: `SWRConfig` global (revalidateOnFocus off, deduping 5s, keepPreviousData, retry 2)
+- [x] Code-splitting de vendors en Vite (`manualChunks`): chunk principal de la app 811 KB → 263 KB; react/mui/charts/forms en chunks propios cacheables
+- [ ] Optimización de consultas backend (reportes agregan en JS; pendiente si el volumen crece)
 
 ## Fase 15 — Producción
 

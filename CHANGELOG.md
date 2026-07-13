@@ -1,5 +1,16 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-13 — Fase 14 (parcial): optimización frontend
+
+**Cambiado:**
+
+- `App.jsx`: `SWRConfig` global (`revalidateOnFocus: false`, `dedupingInterval: 5000`, `keepPreviousData: true`, `errorRetryCount: 2`) — menos requests redundantes y navegación/paginación sin parpadeo
+- `vite.config.mjs`: `manualChunks` (función) para separar vendors en chunks propios (react-vendor, mui-core, mui-icons, charts, forms, icons-tabler)
+
+**Impacto:** el chunk principal de la app pasó de ~811 KB a ~263 KB; las librerías pesadas (MUI, ApexCharts, RHF/Zod) quedan en chunks cacheables que no cambian entre deploys. Lazy loading de rutas ya estaba. Pendiente: optimización de consultas backend.
+
+---
+
 ## 2026-07-12 — Fase 13 completa: auditoría
 
 **Agregado:**

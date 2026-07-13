@@ -17,7 +17,23 @@ export default defineConfig(({ mode }) => {
             host: true
         },
         build: {
-            chunkSizeWarningLimit: 1600
+            chunkSizeWarningLimit: 1600,
+            rollupOptions: {
+                output: {
+                    // Separa las librerías pesadas en chunks propios: bundle inicial más
+                    // chico y mejor cacheo entre deploys (el vendor no cambia con la app).
+                    manualChunks(id) {
+                        if (!id.includes('node_modules')) return undefined;
+                        if (id.includes('@mui/icons-material')) return 'mui-icons';
+                        if (id.includes('@tabler/icons-react')) return 'icons-tabler';
+                        if (id.includes('@mui') || id.includes('@emotion')) return 'mui-core';
+                        if (id.includes('apexcharts')) return 'charts';
+                        if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('/zod/')) return 'forms';
+                        if (id.includes('react-router') || id.includes('/react-dom/') || id.includes('/react/') || id.includes('/scheduler/')) return 'react-vendor';
+                        return undefined;
+                    }
+                }
+            }
         },
         optimizeDeps: {
             exclude: ['@tabler/icons-react']
