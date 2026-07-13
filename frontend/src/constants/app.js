@@ -17,6 +17,16 @@ export const CURRENCY = {
   locale: 'es-AR'
 };
 
+// Categorías de gastos fijos (deben coincidir con el enum del backend).
+export const EXPENSE_CATEGORIES = [
+  { value: 'ALQUILER', label: 'Alquiler' },
+  { value: 'SERVICIO', label: 'Servicio' },
+  { value: 'CREDITO', label: 'Crédito' },
+  { value: 'OTRO', label: 'Otro' }
+];
+
+export const EXPENSE_CATEGORY_LABELS = EXPENSE_CATEGORIES.reduce((acc, c) => ({ ...acc, [c.value]: c.label }), {});
+
 export const DATE_LOCALE = 'es-AR';
 export const TIMEZONE = 'America/Argentina/Buenos_Aires';
 

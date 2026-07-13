@@ -341,3 +341,23 @@ model Branch {
 
   @@index([name])
 }
+
+enum FixedExpenseCategory {
+  ALQUILER
+  SERVICIO
+  CREDITO
+  OTRO
+}
+
+// Gastos fijos mensuales del negocio (alquiler, servicios, créditos, etc.).
+model FixedExpense {
+  id        Int                  @id @default(autoincrement())
+  name      String
+  category  FixedExpenseCategory @default(OTRO)
+  amount    Decimal              @db.Decimal(12, 2)
+  active    Boolean              @default(true)
+  createdAt DateTime             @default(now())
+  updatedAt DateTime             @updatedAt
+
+  @@index([category])
+}

@@ -183,6 +183,23 @@ Estado general: **Fases 1 a 11 y 14 completas. Fase 12 parcial (falta Impresoras
 
 ---
 
+## Módulos adicionales (fuera del roadmap original)
+
+### Gastos Fijos (completo)
+
+- [x] ABM de gastos fijos mensuales (nombre, categoría alquiler/servicio/crédito/otro, monto, activo)
+- [x] Endpoint de resumen (total mensual + desglose por categoría)
+- [x] Página `/gastos-fijos` (item de menú en Administración) con total mensual
+- [x] Widget en el dashboard (total + desglose por categoría)
+- Sin integración con Caja (por decisión)
+
+### Personal (pendiente)
+
+- [ ] Empleados (separados de Usuarios): nombre, puesto, sueldo, activo
+- [ ] Movimientos por empleado (adelanto / descuento / pago) con saldo tipo ledger continuo
+
+---
+
 ## Pendientes / notas abiertas
 
 - **Validación en backend:** los módulos validan solo con Zod en el frontend; falta middleware de validación en la API (deuda transversal a todos los módulos).

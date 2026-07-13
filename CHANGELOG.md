@@ -1,5 +1,19 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-13 — Nuevo módulo: Gastos Fijos
+
+**Agregado:**
+
+- Modelo `FixedExpense` + enum `FixedExpenseCategory` (ALQUILER/SERVICIO/CREDITO/OTRO) + migración `20260713171549_gastos_fijos`
+- Backend: módulo `fixed-expenses` en `/api/fixed-expenses` (CRUD + `GET /summary` con total mensual y desglose por categoría)
+- Frontend: `fixedExpenseService`, hooks `useFixedExpenses` / `useFixedExpensesSummary`, página `/gastos-fijos` (`ExpensesPage` + `ExpenseTable` + `ExpenseFormModal`) con item de menú en Administración
+- Widget `FixedExpensesCard` en el dashboard (total mensual + desglose por categoría)
+- Constantes `EXPENSE_CATEGORIES` / `EXPENSE_CATEGORY_LABELS`
+
+Sin integración con Caja (por decisión). Próximo módulo: Personal.
+
+---
+
 ## 2026-07-13 — Fase 14 cerrada + eliminación de Auditoría
 
 **Eliminado:**

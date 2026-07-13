@@ -14,6 +14,7 @@ import TotalIncomeDarkCard from 'components/cards/TotalIncomeDarkCard';
 import TotalIncomeLightCard from 'components/cards/TotalIncomeLightCard';
 import TotalGrowthBarChart from './TotalGrowthBarChart';
 import PopularCard from './PopularCard';
+import FixedExpensesCard from './FixedExpensesCard';
 
 import { gridSpacing } from 'constants/store';
 import { useDashboard } from 'hooks/useDashboard';
@@ -98,6 +99,13 @@ export default function Dashboard() {
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <PopularCard isLoading={isLoading} ultimasVentas={ultimasVentas} />
+          </Grid>
+        </Grid>
+      </Grid>
+      <Grid size={12}>
+        <Grid container spacing={gridSpacing}>
+          <Grid size={{ xs: 12, md: 4 }}>
+            <FixedExpensesCard />
           </Grid>
         </Grid>
       </Grid>

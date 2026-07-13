@@ -20,6 +20,7 @@ import reportRoutes from './modules/reports/report.routes.js';
 import settingsRoutes from './modules/settings/settings.routes.js';
 import userRoutes from './modules/users/user.routes.js';
 import branchRoutes from './modules/branches/branch.routes.js';
+import fixedExpenseRoutes from './modules/fixed-expenses/fixedExpense.routes.js';
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use('/api/reports', reportRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/branches', branchRoutes);
+app.use('/api/fixed-expenses', fixedExpenseRoutes);
 
 // Health check
 app.get('/api/health', (_req, res) => {

@@ -1,4 +1,4 @@
-import { IconReportAnalytics, IconSettings } from '@tabler/icons-react';
+import { IconReportAnalytics, IconSettings, IconReceipt2 } from '@tabler/icons-react';
 
 const administracion = {
   id: 'administracion',
@@ -11,6 +11,14 @@ const administracion = {
       type: 'item',
       url: '/reportes',
       icon: IconReportAnalytics,
+      breadcrumbs: false
+    },
+    {
+      id: 'gastos-fijos',
+      title: 'Gastos Fijos',
+      type: 'item',
+      url: '/gastos-fijos',
+      icon: IconReceipt2,
       breadcrumbs: false
     },
     {
