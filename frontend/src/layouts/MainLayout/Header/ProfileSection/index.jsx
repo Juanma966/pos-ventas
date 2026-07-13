@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useTheme } from '@mui/material/styles';
+import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
 import Divider from '@mui/material/Divider';
@@ -19,6 +20,7 @@ import MainCard from 'components/cards/MainCard';
 import Transitions from 'components/extended/Transitions';
 import useConfig from 'hooks/useConfig';
 import useAuth from 'hooks/useAuth';
+import ProfileModal from './ProfileModal';
 
 import { IconLogout, IconSettings, IconUser } from '@tabler/icons-react';
 
@@ -28,6 +30,7 @@ export default function ProfileSection() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const anchorRef = useRef(null);
 
   const handleToggle = () => setOpen((prev) => !prev);
@@ -40,6 +43,11 @@ export default function ProfileSection() {
   const handleLogout = async () => {
     await logout();
     navigate('/login', { replace: true });
+  };
+
+  const openProfile = () => {
+    setOpen(false);
+    setProfileOpen(true);
   };
 
   const prevOpen = useRef(open);
@@ -58,6 +66,11 @@ export default function ProfileSection() {
           borderRadius: '27px',
           '& .MuiChip-label': { lineHeight: 0, px: 1.5 }
         }}
+        icon={
+          user?.avatar ? (
+            <Avatar src={user.avatar} alt={user?.name} sx={{ ...theme.typography.mediumAvatar, margin: '8px 0 8px 8px !important', cursor: 'pointer' }} />
+          ) : undefined
+        }
         label={<IconSettings stroke={1.5} size="24px" />}
         ref={anchorRef}
         aria-controls={open ? 'profile-menu' : undefined}
@@ -82,11 +95,16 @@ export default function ProfileSection() {
                 {open && (
                   <MainCard border={false} elevation={16} content={false} boxShadow shadow={theme.shadows[16]}>
                     <Box sx={{ p: 2, pb: 0 }}>
-                      <Stack spacing={0.5}>
-                        <Typography variant="h4">{user?.name || 'Usuario'}</Typography>
-                        <Typography variant="subtitle2" color="text.secondary">
-                          {user?.role || 'Sin rol'}
-                        </Typography>
+                      <Stack direction="row" spacing={1.5} alignItems="center">
+                        <Avatar src={user?.avatar || undefined} sx={{ width: 44, height: 44 }}>
+                          {(user?.name || 'U').charAt(0).toUpperCase()}
+                        </Avatar>
+                        <Stack spacing={0.25}>
+                          <Typography variant="h4">{user?.name || 'Usuario'}</Typography>
+                          <Typography variant="subtitle2" color="text.secondary">
+                            {user?.role || 'Sin rol'}
+                          </Typography>
+                        </Stack>
                       </Stack>
                       <Divider sx={{ mt: 2 }} />
                     </Box>
@@ -100,17 +118,11 @@ export default function ProfileSection() {
                           '& .MuiListItemButton-root': { mt: 0.5 }
                         }}
                       >
-                        <ListItemButton sx={{ borderRadius: `${borderRadius}px` }}>
+                        <ListItemButton sx={{ borderRadius: `${borderRadius}px` }} onClick={openProfile}>
                           <ListItemIcon>
                             <IconUser stroke={1.5} size="20px" />
                           </ListItemIcon>
                           <ListItemText primary={<Typography variant="body2">Mi perfil</Typography>} />
-                        </ListItemButton>
-                        <ListItemButton sx={{ borderRadius: `${borderRadius}px` }}>
-                          <ListItemIcon>
-                            <IconSettings stroke={1.5} size="20px" />
-                          </ListItemIcon>
-                          <ListItemText primary={<Typography variant="body2">Configuración</Typography>} />
                         </ListItemButton>
                         <Divider sx={{ my: 1 }} />
                         <ListItemButton sx={{ borderRadius: `${borderRadius}px` }} onClick={handleLogout}>
@@ -128,6 +140,8 @@ export default function ProfileSection() {
           </ClickAwayListener>
         )}
       </Popper>
+
+      <ProfileModal open={profileOpen} onClose={() => setProfileOpen(false)} />
     </>
   );
 }

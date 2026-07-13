@@ -50,7 +50,7 @@ export const authService = {
     return {
       accessToken,
       refreshToken,
-      user: { id: user.id, name: user.name, email: user.email, role: user.role.name },
+      user: { id: user.id, name: user.name, email: user.email, role: user.role.name, avatar: user.avatar },
     };
   },
 
@@ -106,6 +106,25 @@ export const authService = {
     if (!user || !user.active) {
       throw new AppError('Usuario no encontrado', 404);
     }
-    return { id: user.id, name: user.name, email: user.email, role: user.role.name };
+    return { id: user.id, name: user.name, email: user.email, role: user.role.name, avatar: user.avatar };
+  },
+
+  // Actualiza el perfil propio del usuario (nombre e imagen). No toca rol ni permisos.
+  async updateProfile(userId, data) {
+    const patch = {};
+    if (data.name !== undefined) {
+      if (!String(data.name).trim()) throw new AppError('El nombre no puede estar vacío');
+      patch.name = String(data.name).trim();
+    }
+    if (data.avatar !== undefined) {
+      // avatar = data URL base64 o null para quitarla
+      patch.avatar = data.avatar || null;
+    }
+    const user = await prisma.user.update({
+      where: { id: userId },
+      data: patch,
+      include: { role: true },
+    });
+    return { id: user.id, name: user.name, email: user.email, role: user.role.name, avatar: user.avatar };
   },
 };
