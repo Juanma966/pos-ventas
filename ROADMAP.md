@@ -207,7 +207,7 @@ Estado general: **Fases 1 a 11 y 14 completas. Fase 12 parcial (falta Impresoras
 
 ## Pendientes / notas abiertas
 
-- **Validación en backend:** los módulos validan solo con Zod en el frontend; falta middleware de validación en la API (deuda transversal a todos los módulos).
+- ~~**Validación en backend:** falta middleware de validación en la API~~ — **RESUELTO**: middleware `validate(schema)` con Zod aplicado a todos los endpoints con entrada (products, categories, brands, customers, suppliers, branches, fixed-expenses, sales, purchases, cash, inventory, employees, users, settings, auth).
 - **`formatCurrency` compartido:** se creó `utils/formatCurrency.js` y se usa en Compras; queda migrar los usos inline duplicados en Clientes, Productos y Dashboard.
 
 ## Bugs conocidos
