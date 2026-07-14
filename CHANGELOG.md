@@ -1,5 +1,18 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-13 — Fase 15: Producción (seguridad, Docker, backups, docs)
+
+**Agregado:**
+
+- **Seguridad (15A):** rate limiting con `express-rate-limit` (limiter general de la API + limiter estricto en `/api/auth/login`), límite de body JSON a 2 MB, `trust proxy` en producción y validación de entorno que aborta el arranque si los secretos JWT son débiles o los de ejemplo. Archivos: `backend/src/middleware/rateLimit.middleware.js`, `app.js`, `config/env.js`.
+- **Docker (15B):** `backend/Dockerfile` (Node 20 + pnpm, `prisma generate`, `migrate deploy` al arrancar), `frontend/Dockerfile` (build multi-stage con Vite servido por nginx), `frontend/nginx.conf` (SPA fallback + proxy de `/api` + gzip/cache), `docker-compose.prod.yml` (postgres + backend + frontend), `.env.prod.example`. `packageManager: pnpm@10.34.4` en el backend.
+- **Backups y operación (15C):** health check `/api/health` con chequeo de conexión a la base (503 si está caída), cliente Prisma compartido (`config/prisma.js`), healthcheck del backend en el compose (el frontend espera a que esté sano), `scripts/backup.sh` (pg_dump con retención) y `scripts/restore.sh`.
+- **Documentación (15D):** `DEPLOY.md` (guía de despliegue en VPS), `README.md`, cierre de la Fase 15 en el ROADMAP.
+
+Cierra la Fase 15 y el roadmap original del proyecto.
+
+---
+
 ## 2026-07-13 — Nuevo módulo: Personal (empleados)
 
 **Agregado:**

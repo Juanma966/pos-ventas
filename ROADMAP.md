@@ -1,6 +1,6 @@
 # ROADMAP — POS Ventas
 
-Estado general: **Fases 1 a 11 y 14 completas. Fase 12 parcial (falta Impresoras). Fase 13 (Auditoría) removida. En curso: nuevos módulos Gastos Fijos y Personal.**
+Estado general: **Fases 1 a 11, 14 y 15 completas. Fase 12 parcial (falta Impresoras). Fase 13 (Auditoría) removida. Módulos adicionales (Gastos Fijos, Personal) completos. Roadmap original terminado.**
 
 ## Fase 1 — Base del proyecto
 
@@ -172,14 +172,35 @@ Estado general: **Fases 1 a 11 y 14 completas. Fase 12 parcial (falta Impresoras
 
 - ~~Optimización de consultas backend~~ — el volumen es chico; agregar en JS anda bien. Se revisará solo si el volumen crece.
 
-## Fase 15 — Producción
+## Fase 15 — Producción (completa)
 
-- [ ] Seguridad
-- [ ] Despliegue
-- [ ] Docker
-- [ ] Backups
-- [ ] Monitoreo
-- [ ] Documentación
+### 15A — Seguridad (completo)
+
+- [x] Rate limiting (`express-rate-limit`): limiter general de la API + limiter estricto en `/api/auth/login`
+- [x] Límite de body JSON (2 MB) para los avatares base64
+- [x] `trust proxy` en producción (IP/HTTPS reales detrás de nginx)
+- [x] Validación de entorno: aborta el arranque en producción si los secretos JWT son débiles o los de ejemplo
+
+### 15B — Docker (completo)
+
+- [x] `backend/Dockerfile` (Node 20 + pnpm, `prisma generate`, `migrate deploy` al arrancar)
+- [x] `frontend/Dockerfile` multi-stage (build Vite) servido por nginx con proxy de `/api`
+- [x] `docker-compose.prod.yml` (postgres + backend + frontend) + `.env.prod.example`
+
+### 15C — Backups y operación (completo)
+
+- [x] Health check `/api/health` con chequeo de conexión a la base (503 si está caída)
+- [x] Healthcheck del backend en el compose (el frontend espera a que esté sano)
+- [x] `scripts/backup.sh` (pg_dump con retención) y `scripts/restore.sh`
+
+### 15D — Documentación (completo)
+
+- [x] `DEPLOY.md` (guía de despliegue en VPS con Docker) + `README.md`
+- [x] Roadmap y changelog actualizados
+
+### Pendiente / mejora futura
+
+- [ ] Monitoreo con alertas (uptime/errores) — cuando el volumen lo justifique
 
 ---
 
