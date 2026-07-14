@@ -50,6 +50,7 @@ export const productService = {
       data: {
         name: data.name,
         description: data.description,
+        image: data.image || null,
         barcode: data.barcode || null,
         price: data.price,
         cost: data.cost,
@@ -74,6 +75,7 @@ export const productService = {
       data: {
         ...(data.name !== undefined && { name: data.name }),
         ...(data.description !== undefined && { description: data.description }),
+        ...(data.image !== undefined && { image: data.image || null }),
         ...(data.barcode !== undefined && { barcode: data.barcode || null }),
         ...(data.price !== undefined && { price: data.price }),
         ...(data.cost !== undefined && { cost: data.cost }),

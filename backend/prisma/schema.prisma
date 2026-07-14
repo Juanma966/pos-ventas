@@ -109,6 +109,7 @@ model Product {
   id          Int       @id @default(autoincrement())
   name        String
   description String?
+  image       String?   @db.Text
   barcode     String?   @unique
   price       Decimal   @db.Decimal(10, 2)
   cost        Decimal   @db.Decimal(10, 2)

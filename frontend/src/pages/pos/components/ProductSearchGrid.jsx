@@ -12,6 +12,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import SearchIcon from '@mui/icons-material/Search';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 import useProducts from 'hooks/useProducts';
 import formatCurrency from 'utils/formatCurrency';
@@ -58,6 +59,20 @@ export default function ProductSearchGrid({ onSelect }) {
                     onClick={() => onSelect(product)}
                     sx={{ p: 1.5, height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}
                   >
+                    <Box
+                      sx={{
+                        width: '100%', height: 80, mb: 1, borderRadius: 1, overflow: 'hidden',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        bgcolor: 'grey.100', color: 'grey.400'
+                      }}
+                    >
+                      {product.image ? (
+                        <Box component="img" src={product.image} alt={product.name}
+                          sx={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <ImageOutlinedIcon />
+                      )}
+                    </Box>
                     <Typography variant="body2" fontWeight={500} sx={{ mb: 0.5, minHeight: 40 }}>
                       {product.name}
                     </Typography>

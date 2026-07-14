@@ -15,13 +15,19 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
 import Alert from '@mui/material/Alert';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
 import CircularProgress from '@mui/material/CircularProgress';
+import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 import useCategories from 'hooks/useCategories';
 import useBrands from 'hooks/useBrands';
+import resizeImage from 'utils/resizeImage';
 
 const schema = z.object({
   name: z.string().min(1, 'El nombre es requerido').max(100),
+  image: z.string().nullable().optional(),
   description: z.string().max(500).optional().or(z.literal('')),
   barcode: z.string().max(50).optional().or(z.literal('')),
   price: z.coerce.number({ invalid_type_error: 'Ingresá un precio válido' }).positive('El precio debe ser mayor a 0'),
@@ -40,7 +46,7 @@ export default function ProductFormModal({ open, onClose, onSubmit, product, isS
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      name: '', description: '', barcode: '', price: '', cost: '',
+      name: '', image: null, description: '', barcode: '', price: '', cost: '',
       stock: 0, minStock: 5, categoryId: '', brandId: null, active: true,
     },
   });
@@ -49,6 +55,7 @@ export default function ProductFormModal({ open, onClose, onSubmit, product, isS
     if (product) {
       reset({
         name: product.name,
+        image: product.image ?? null,
         description: product.description ?? '',
         barcode: product.barcode ?? '',
         price: product.price,
@@ -60,7 +67,7 @@ export default function ProductFormModal({ open, onClose, onSubmit, product, isS
         active: product.active,
       });
     } else {
-      reset({ name: '', description: '', barcode: '', price: '', cost: '', stock: 0, minStock: 5, categoryId: '', brandId: null, active: true });
+      reset({ name: '', image: null, description: '', barcode: '', price: '', cost: '', stock: 0, minStock: 5, categoryId: '', brandId: null, active: true });
     }
   }, [product, reset]);
 
@@ -73,6 +80,38 @@ export default function ProductFormModal({ open, onClose, onSubmit, product, isS
         <DialogContent dividers>
           {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
           <Grid container spacing={2} sx={{ pt: 1 }}>
+            <Grid size={12}>
+              <Controller name="image" control={control} render={({ field }) => (
+                <Stack direction="row" spacing={2} alignItems="center">
+                  <Avatar variant="rounded" src={field.value || undefined} sx={{ width: 72, height: 72 }}>
+                    <ImageOutlinedIcon />
+                  </Avatar>
+                  <Stack direction="row" spacing={1}>
+                    <Button component="label" size="small" startIcon={<PhotoCameraOutlinedIcon />}>
+                      {field.value ? 'Cambiar imagen' : 'Agregar imagen'}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        hidden
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          try {
+                            field.onChange(await resizeImage(file, 400));
+                          } catch {
+                            /* imagen inválida: se ignora */
+                          }
+                          e.target.value = '';
+                        }}
+                      />
+                    </Button>
+                    {field.value && (
+                      <Button size="small" color="error" onClick={() => field.onChange(null)}>Quitar</Button>
+                    )}
+                  </Stack>
+                </Stack>
+              )} />
+            </Grid>
             <Grid size={{ xs: 12, sm: 8 }}>
               <Controller name="name" control={control} render={({ field }) => (
                 <TextField {...field} label="Nombre *" fullWidth error={!!errors.name} helperText={errors.name?.message} />

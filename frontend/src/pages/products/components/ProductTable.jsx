@@ -13,10 +13,13 @@ import Tooltip from '@mui/material/Tooltip';
 import Skeleton from '@mui/material/Skeleton';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+import Avatar from '@mui/material/Avatar';
+import Stack from '@mui/material/Stack';
 
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(value);
@@ -77,12 +80,17 @@ export default function ProductTable({ products, total, page, rowsPerPage, isLoa
               return (
                 <TableRow key={product.id} hover>
                   <TableCell>
-                    <Box>
-                      <Typography variant="body2" fontWeight={500}>{product.name}</Typography>
-                      {product.barcode && (
-                        <Typography variant="caption" color="text.secondary">{product.barcode}</Typography>
-                      )}
-                    </Box>
+                    <Stack direction="row" spacing={1.5} alignItems="center">
+                      <Avatar variant="rounded" src={product.image || undefined} sx={{ width: 40, height: 40 }}>
+                        <ImageOutlinedIcon fontSize="small" />
+                      </Avatar>
+                      <Box>
+                        <Typography variant="body2" fontWeight={500}>{product.name}</Typography>
+                        {product.barcode && (
+                          <Typography variant="caption" color="text.secondary">{product.barcode}</Typography>
+                        )}
+                      </Box>
+                    </Stack>
                   </TableCell>
                   <TableCell>{product.category?.name}</TableCell>
                   <TableCell>{product.brand?.name ?? '—'}</TableCell>
