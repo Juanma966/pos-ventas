@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 
 import { env } from './config/env.js';
+import { prisma } from './config/prisma.js';
 import { errorMiddleware } from './middleware/error.middleware.js';
 import { apiLimiter, loginLimiter } from './middleware/rateLimit.middleware.js';
 import authRoutes from './modules/auth/auth.routes.js';
@@ -64,9 +65,14 @@ app.use('/api/branches', branchRoutes);
 app.use('/api/fixed-expenses', fixedExpenseRoutes);
 app.use('/api/employees', employeeRoutes);
 
-// Health check
-app.get('/api/health', (_req, res) => {
-  res.json({ status: 'ok', env: env.nodeEnv });
+// Health check: incluye la conectividad con la base de datos.
+app.get('/api/health', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'ok', env: env.nodeEnv, db: 'up' });
+  } catch {
+    res.status(503).json({ status: 'error', env: env.nodeEnv, db: 'down' });
+  }
 });
 
 // 404

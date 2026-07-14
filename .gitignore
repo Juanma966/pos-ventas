@@ -14,6 +14,9 @@ backend/.env
 # .env de la raíz: variables de docker-compose.prod (secretos de producción)
 /.env
 
+# Backups de la base de datos
+/backups/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*
