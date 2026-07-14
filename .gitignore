@@ -11,6 +11,8 @@ build/
 **/.env.test.local
 **/.env.production.local
 backend/.env
+# .env de la raíz: variables de docker-compose.prod (secretos de producción)
+/.env
 
 # Logs
 npm-debug.log*
