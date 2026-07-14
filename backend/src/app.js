@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 
 import { env } from './config/env.js';
 import { errorMiddleware } from './middleware/error.middleware.js';
+import { apiLimiter, loginLimiter } from './middleware/rateLimit.middleware.js';
 import authRoutes from './modules/auth/auth.routes.js';
 import categoryRoutes from './modules/categories/category.routes.js';
 import brandRoutes from './modules/brands/brand.routes.js';
@@ -25,16 +26,27 @@ import employeeRoutes from './modules/employees/employee.routes.js';
 
 const app = express();
 
+// Detrás de un reverse proxy (nginx) en producción: necesario para que
+// rate-limit y las cookies "secure" vean la IP/protocolo reales.
+if (!env.isDev) {
+  app.set('trust proxy', 1);
+}
+
 app.use(helmet());
 app.use(cors({
   origin: env.frontendUrl,
   credentials: true,
 }));
 app.use(morgan(env.isDev ? 'dev' : 'combined'));
-app.use(express.json());
+// Límite de tamaño: los avatares viajan como data URL base64 en el body.
+app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 
+// Rate limiting general de la API (se desactiva en desarrollo).
+app.use('/api', apiLimiter);
+
 // Rutas
+app.use('/api/auth/login', loginLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/brands', brandRoutes);
