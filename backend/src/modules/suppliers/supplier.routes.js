@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { supplierController } from './supplier.controller.js';
-import { authenticate } from '../../middleware/auth.middleware.js';
+import { authenticate, authorize } from '../../middleware/auth.middleware.js';
 import { validate } from '../../middleware/validate.middleware.js';
+import { ADMIN_ONLY } from '../../config/roles.js';
 import { createSupplierSchema, updateSupplierSchema } from './supplier.schema.js';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate, authorize(...ADMIN_ONLY));
 
 router.get('/', supplierController.getAll);
 router.get('/:id', supplierController.getById);

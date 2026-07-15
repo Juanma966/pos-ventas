@@ -1,4 +1,5 @@
 import { IconShoppingBag, IconWallet, IconClipboardList } from '@tabler/icons-react';
+import { ADMIN_ONLY, CASH_ROLES } from 'constants/permissions';
 
 const operaciones = {
   id: 'operaciones',
@@ -11,7 +12,8 @@ const operaciones = {
       type: 'item',
       url: '/compras',
       icon: IconShoppingBag,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     },
     {
       id: 'caja',
@@ -19,7 +21,8 @@ const operaciones = {
       type: 'item',
       url: '/caja',
       icon: IconWallet,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: CASH_ROLES
     },
     {
       id: 'inventario',
@@ -27,7 +30,8 @@ const operaciones = {
       type: 'item',
       url: '/inventario',
       icon: IconClipboardList,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     }
   ]
 };

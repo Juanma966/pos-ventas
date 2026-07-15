@@ -4,6 +4,8 @@ import MainLayout from 'layouts/MainLayout';
 import Loadable from 'components/Loadable';
 import PagePlaceholder from 'components/PagePlaceholder';
 import ProtectedRoute from './ProtectedRoute';
+import RequireRole from './RequireRole';
+import { ADMIN_ONLY, CASH_ROLES } from 'constants/permissions';
 
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/Default')));
 const ProductsPage = Loadable(lazy(() => import('pages/products/ProductsPage')));
@@ -35,22 +37,106 @@ const MainRoutes = {
     { path: 'ventas/historial', element: <SalesPage /> },
 
     { path: 'productos', element: <ProductsPage /> },
-    { path: 'categorias', element: <PagePlaceholder title="Categorías" /> },
-    { path: 'marcas', element: <PagePlaceholder title="Marcas" /> },
+    {
+      path: 'categorias',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <PagePlaceholder title="Categorías" />
+        </RequireRole>
+      )
+    },
+    {
+      path: 'marcas',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <PagePlaceholder title="Marcas" />
+        </RequireRole>
+      )
+    },
 
     { path: 'clientes', element: <CustomersPage /> },
-    { path: 'proveedores', element: <SuppliersPage /> },
-    { path: 'personal', element: <EmployeesPage /> },
+    {
+      path: 'proveedores',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <SuppliersPage />
+        </RequireRole>
+      )
+    },
+    {
+      path: 'personal',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <EmployeesPage />
+        </RequireRole>
+      )
+    },
 
-    { path: 'compras', element: <PurchasesPage /> },
-    { path: 'compras/nueva', element: <PurchaseFormPage /> },
-    { path: 'compras/:id', element: <PurchaseFormPage /> },
-    { path: 'caja', element: <CashPage /> },
-    { path: 'inventario', element: <InventoryPage /> },
+    {
+      path: 'compras',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <PurchasesPage />
+        </RequireRole>
+      )
+    },
+    {
+      path: 'compras/nueva',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <PurchaseFormPage />
+        </RequireRole>
+      )
+    },
+    {
+      path: 'compras/:id',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <PurchaseFormPage />
+        </RequireRole>
+      )
+    },
+    {
+      path: 'caja',
+      element: (
+        <RequireRole roles={CASH_ROLES}>
+          <CashPage />
+        </RequireRole>
+      )
+    },
+    {
+      path: 'inventario',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <InventoryPage />
+        </RequireRole>
+      )
+    },
 
-    { path: 'reportes', element: <ReportsPage /> },
-    { path: 'configuracion', element: <ConfigPage /> },
-    { path: 'gastos-fijos', element: <ExpensesPage /> }
+    {
+      path: 'reportes',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <ReportsPage />
+        </RequireRole>
+      )
+    },
+    {
+      path: 'configuracion',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <ConfigPage />
+        </RequireRole>
+      )
+    },
+    {
+      path: 'gastos-fijos',
+      element: (
+        <RequireRole roles={ADMIN_ONLY}>
+          <ExpensesPage />
+        </RequireRole>
+      )
+    }
   ]
 };
 

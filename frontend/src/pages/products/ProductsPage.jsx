@@ -18,11 +18,16 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import MainCard from 'components/cards/MainCard';
 import useProducts from 'hooks/useProducts';
+import useAuth from 'hooks/useAuth';
+import { ADMIN_ONLY } from 'constants/permissions';
 import { productService } from 'services/productService';
 import ProductTable from './components/ProductTable';
 import ProductFormModal from './components/ProductFormModal';
 
 export default function ProductsPage() {
+  const { hasRole } = useAuth();
+  const canManage = hasRole(ADMIN_ONLY);
+
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -38,7 +43,7 @@ export default function ProductsPage() {
   const { products, total, isLoading, mutate } = useProducts({
     search,
     page: page + 1,
-    limit: rowsPerPage,
+    limit: rowsPerPage
   });
 
   const handleOpenCreate = () => {
@@ -97,9 +102,11 @@ export default function ProductsPage() {
       <MainCard>
         <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
           <Typography variant="h3">Productos</Typography>
-          <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenCreate}>
-            Nuevo producto
-          </Button>
+          {canManage && (
+            <Button variant="contained" startIcon={<AddIcon />} onClick={handleOpenCreate}>
+              Nuevo producto
+            </Button>
+          )}
         </Stack>
 
         <Card variant="outlined" sx={{ mb: 2 }}>
@@ -107,11 +114,18 @@ export default function ProductsPage() {
             <TextField
               placeholder="Buscar por nombre o código de barras..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(0);
+              }}
               size="small"
               sx={{ width: { xs: '100%', sm: 360 } }}
               InputProps={{
-                startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
+                )
               }}
             />
           </CardContent>
@@ -123,10 +137,14 @@ export default function ProductsPage() {
           page={page}
           rowsPerPage={rowsPerPage}
           isLoading={isLoading}
+          canManage={canManage}
           onEdit={handleOpenEdit}
           onDelete={(product) => setDeleteDialog({ open: true, product })}
           onPageChange={(_, newPage) => setPage(newPage)}
-          onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          }}
         />
       </MainCard>
 

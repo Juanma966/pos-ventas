@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { purchaseController } from './purchase.controller.js';
-import { authenticate } from '../../middleware/auth.middleware.js';
+import { authenticate, authorize } from '../../middleware/auth.middleware.js';
 import { validate } from '../../middleware/validate.middleware.js';
+import { ADMIN_ONLY } from '../../config/roles.js';
 import { purchaseSchema } from './purchase.schema.js';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate, authorize(...ADMIN_ONLY));
 
 router.get('/', purchaseController.getAll);
 router.get('/:id', purchaseController.getById);

@@ -24,7 +24,18 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 const formatCurrency = (value) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(value);
 
-export default function ProductTable({ products, total, page, rowsPerPage, isLoading, onEdit, onDelete, onPageChange, onRowsPerPageChange }) {
+export default function ProductTable({
+  products,
+  total,
+  page,
+  rowsPerPage,
+  isLoading,
+  canManage = true,
+  onEdit,
+  onDelete,
+  onPageChange,
+  onRowsPerPageChange
+}) {
   if (isLoading) {
     return (
       <TableContainer>
@@ -40,7 +51,9 @@ export default function ProductTable({ products, total, page, rowsPerPage, isLoa
             {Array.from({ length: 5 }).map((_, i) => (
               <TableRow key={i}>
                 {Array.from({ length: 7 }).map((__, j) => (
-                  <TableCell key={j}><Skeleton /></TableCell>
+                  <TableCell key={j}>
+                    <Skeleton />
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
@@ -53,7 +66,9 @@ export default function ProductTable({ products, total, page, rowsPerPage, isLoa
   if (!products.length) {
     return (
       <Box sx={{ py: 6, textAlign: 'center' }}>
-        <Typography variant="body1" color="text.secondary">No se encontraron productos</Typography>
+        <Typography variant="body1" color="text.secondary">
+          No se encontraron productos
+        </Typography>
       </Box>
     );
   }
@@ -71,7 +86,7 @@ export default function ProductTable({ products, total, page, rowsPerPage, isLoa
               <TableCell align="right">Costo</TableCell>
               <TableCell align="center">Stock</TableCell>
               <TableCell align="center">Estado</TableCell>
-              <TableCell align="center">Acciones</TableCell>
+              {canManage && <TableCell align="center">Acciones</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -85,9 +100,13 @@ export default function ProductTable({ products, total, page, rowsPerPage, isLoa
                         <ImageOutlinedIcon fontSize="small" />
                       </Avatar>
                       <Box>
-                        <Typography variant="body2" fontWeight={500}>{product.name}</Typography>
+                        <Typography variant="body2" fontWeight={500}>
+                          {product.name}
+                        </Typography>
                         {product.barcode && (
-                          <Typography variant="caption" color="text.secondary">{product.barcode}</Typography>
+                          <Typography variant="caption" color="text.secondary">
+                            {product.barcode}
+                          </Typography>
                         )}
                       </Box>
                     </Stack>
@@ -107,24 +126,22 @@ export default function ProductTable({ products, total, page, rowsPerPage, isLoa
                     </Box>
                   </TableCell>
                   <TableCell align="center">
-                    <Chip
-                      label={product.active ? 'Activo' : 'Inactivo'}
-                      color={product.active ? 'success' : 'default'}
-                      size="small"
-                    />
+                    <Chip label={product.active ? 'Activo' : 'Inactivo'} color={product.active ? 'success' : 'default'} size="small" />
                   </TableCell>
-                  <TableCell align="center">
-                    <Tooltip title="Editar">
-                      <IconButton size="small" onClick={() => onEdit(product)}>
-                        <EditOutlinedIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Eliminar">
-                      <IconButton size="small" color="error" onClick={() => onDelete(product)}>
-                        <DeleteOutlineIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </TableCell>
+                  {canManage && (
+                    <TableCell align="center">
+                      <Tooltip title="Editar">
+                        <IconButton size="small" onClick={() => onEdit(product)}>
+                          <EditOutlinedIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Eliminar">
+                        <IconButton size="small" color="error" onClick={() => onDelete(product)}>
+                          <DeleteOutlineIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  )}
                 </TableRow>
               );
             })}
@@ -152,8 +169,9 @@ ProductTable.propTypes = {
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
   isLoading: PropTypes.bool,
+  canManage: PropTypes.bool,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onPageChange: PropTypes.func.isRequired,
-  onRowsPerPageChange: PropTypes.func.isRequired,
+  onRowsPerPageChange: PropTypes.func.isRequired
 };

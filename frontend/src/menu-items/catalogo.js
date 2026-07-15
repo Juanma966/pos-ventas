@@ -1,4 +1,5 @@
 import { IconPackage, IconCategory, IconTag } from '@tabler/icons-react';
+import { ADMIN_ONLY } from 'constants/permissions';
 
 const catalogo = {
   id: 'catalogo',
@@ -19,7 +20,8 @@ const catalogo = {
       type: 'item',
       url: '/categorias',
       icon: IconCategory,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     },
     {
       id: 'marcas',
@@ -27,7 +29,8 @@ const catalogo = {
       type: 'item',
       url: '/marcas',
       icon: IconTag,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     }
   ]
 };

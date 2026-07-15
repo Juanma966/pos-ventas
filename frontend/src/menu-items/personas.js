@@ -1,4 +1,5 @@
 import { IconUsers, IconTruck, IconUserCog } from '@tabler/icons-react';
+import { ADMIN_ONLY } from 'constants/permissions';
 
 const personas = {
   id: 'personas',
@@ -19,7 +20,8 @@ const personas = {
       type: 'item',
       url: '/proveedores',
       icon: IconTruck,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     },
     {
       id: 'personal',
@@ -27,7 +29,8 @@ const personas = {
       type: 'item',
       url: '/personal',
       icon: IconUserCog,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     }
   ]
 };

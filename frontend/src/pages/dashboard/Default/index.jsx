@@ -18,18 +18,13 @@ import FixedExpensesCard from './FixedExpensesCard';
 
 import { gridSpacing } from 'constants/store';
 import { useDashboard } from 'hooks/useDashboard';
+import useAuth from 'hooks/useAuth';
+import { ADMIN_ONLY } from 'constants/permissions';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const {
-    isLoading,
-    ventasHoy,
-    transaccionesHoy,
-    productosBajoStock,
-    clientesNuevosMes,
-    ventasMensuales,
-    ultimasVentas
-  } = useDashboard();
+  const { hasRole } = useAuth();
+  const { isLoading, ventasHoy, transaccionesHoy, productosBajoStock, clientesNuevosMes, ventasMensuales, ultimasVentas } = useDashboard();
 
   return (
     <Grid container spacing={gridSpacing}>
@@ -42,18 +37,10 @@ export default function Dashboard() {
         >
           <Typography variant="h3">Dashboard</Typography>
           <Stack direction="row" spacing={1}>
-            <Button
-              variant="outlined"
-              startIcon={<AccountBalanceWalletOutlinedIcon />}
-              onClick={() => navigate('/caja')}
-            >
+            <Button variant="outlined" startIcon={<AccountBalanceWalletOutlinedIcon />} onClick={() => navigate('/caja')}>
               Caja
             </Button>
-            <Button
-              variant="contained"
-              startIcon={<PointOfSaleIcon />}
-              onClick={() => navigate('/ventas')}
-            >
+            <Button variant="contained" startIcon={<PointOfSaleIcon />} onClick={() => navigate('/ventas')}>
               Nueva venta
             </Button>
           </Stack>
@@ -62,18 +49,10 @@ export default function Dashboard() {
       <Grid size={12}>
         <Grid container spacing={gridSpacing}>
           <Grid size={{ lg: 4, md: 6, sm: 6, xs: 12 }}>
-            <EarningCard
-              isLoading={isLoading}
-              monto={ventasHoy?.monto}
-              variacion={ventasHoy?.variacion}
-            />
+            <EarningCard isLoading={isLoading} monto={ventasHoy?.monto} variacion={ventasHoy?.variacion} />
           </Grid>
           <Grid size={{ lg: 4, md: 6, sm: 6, xs: 12 }}>
-            <TotalOrderLineChartCard
-              isLoading={isLoading}
-              cantidad={transaccionesHoy?.cantidad}
-              variacion={transaccionesHoy?.variacion}
-            />
+            <TotalOrderLineChartCard isLoading={isLoading} cantidad={transaccionesHoy?.cantidad} variacion={transaccionesHoy?.variacion} />
           </Grid>
           <Grid size={{ lg: 4, md: 12, sm: 12, xs: 12 }}>
             <Grid container spacing={gridSpacing}>
@@ -102,13 +81,15 @@ export default function Dashboard() {
           </Grid>
         </Grid>
       </Grid>
-      <Grid size={12}>
-        <Grid container spacing={gridSpacing}>
-          <Grid size={{ xs: 12, md: 4 }}>
-            <FixedExpensesCard />
+      {hasRole(ADMIN_ONLY) && (
+        <Grid size={12}>
+          <Grid container spacing={gridSpacing}>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <FixedExpensesCard />
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      )}
     </Grid>
   );
 }

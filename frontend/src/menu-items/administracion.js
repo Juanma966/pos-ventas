@@ -1,9 +1,11 @@
 import { IconReportAnalytics, IconSettings, IconReceipt2 } from '@tabler/icons-react';
+import { ADMIN_ONLY } from 'constants/permissions';
 
 const administracion = {
   id: 'administracion',
   title: 'Administración',
   type: 'group',
+  // Todo el grupo es solo para administradores.
   children: [
     {
       id: 'reportes',
@@ -11,7 +13,8 @@ const administracion = {
       type: 'item',
       url: '/reportes',
       icon: IconReportAnalytics,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     },
     {
       id: 'gastos-fijos',
@@ -19,7 +22,8 @@ const administracion = {
       type: 'item',
       url: '/gastos-fijos',
       icon: IconReceipt2,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     },
     {
       id: 'configuracion',
@@ -27,7 +31,8 @@ const administracion = {
       type: 'item',
       url: '/configuracion',
       icon: IconSettings,
-      breadcrumbs: false
+      breadcrumbs: false,
+      roles: ADMIN_ONLY
     }
   ]
 };

@@ -23,6 +23,8 @@ import AssignmentReturnOutlinedIcon from '@mui/icons-material/AssignmentReturnOu
 
 import formatCurrency from 'utils/formatCurrency';
 import usePrintTicket from 'hooks/usePrintTicket';
+import useAuth from 'hooks/useAuth';
+import { CASH_ROLES } from 'constants/permissions';
 import Ticket from './Ticket';
 import SaleStatusChip from './SaleStatusChip';
 import ReturnFormModal from './ReturnFormModal';
@@ -34,7 +36,9 @@ const folio = (id) => `V-${String(id).padStart(4, '0')}`;
 function Field({ label, children }) {
   return (
     <Stack spacing={0.5}>
-      <Typography variant="caption" color="text.secondary">{label}</Typography>
+      <Typography variant="caption" color="text.secondary">
+        {label}
+      </Typography>
       <Typography variant="body1">{children}</Typography>
     </Stack>
   );
@@ -46,6 +50,9 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
   const { ticketRef, printTicket } = usePrintTicket();
+  const { hasRole } = useAuth();
+  // Anular y devolver: solo admin y cajero (el vendedor no revierte ventas).
+  const canManageSale = hasRole(CASH_ROLES);
 
   const handleClose = () => {
     setConfirmCancel(false);
@@ -67,10 +74,18 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
       </DialogTitle>
       <DialogContent dividers>
         <Grid container spacing={2} sx={{ mb: 2 }}>
-          <Grid size={6}><Field label="Fecha">{formatDateTime(sale.createdAt)}</Field></Grid>
-          <Grid size={6}><Field label="Cliente">{sale.customer?.name ?? 'Consumidor final'}</Field></Grid>
-          <Grid size={6}><Field label="Vendedor">{sale.user?.name ?? '—'}</Field></Grid>
-          <Grid size={6}><Field label="Método de pago">{PAYMENT_LABELS[sale.paymentMethod] ?? sale.paymentMethod}</Field></Grid>
+          <Grid size={6}>
+            <Field label="Fecha">{formatDateTime(sale.createdAt)}</Field>
+          </Grid>
+          <Grid size={6}>
+            <Field label="Cliente">{sale.customer?.name ?? 'Consumidor final'}</Field>
+          </Grid>
+          <Grid size={6}>
+            <Field label="Vendedor">{sale.user?.name ?? '—'}</Field>
+          </Grid>
+          <Grid size={6}>
+            <Field label="Método de pago">{PAYMENT_LABELS[sale.paymentMethod] ?? sale.paymentMethod}</Field>
+          </Grid>
         </Grid>
 
         <Divider sx={{ mb: 1 }} />
@@ -98,11 +113,15 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
 
         <Stack spacing={0.5} sx={{ mt: 2, ml: 'auto', maxWidth: 240 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="body2" color="text.secondary">Subtotal</Typography>
+            <Typography variant="body2" color="text.secondary">
+              Subtotal
+            </Typography>
             <Typography variant="body2">{formatCurrency(sale.subtotal)}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography variant="body2" color="text.secondary">Descuento</Typography>
+            <Typography variant="body2" color="text.secondary">
+              Descuento
+            </Typography>
             <Typography variant="body2">- {formatCurrency(sale.discount)}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -114,19 +133,26 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
         {sale.returns?.length > 0 && (
           <>
             <Divider sx={{ my: 2 }} />
-            <Typography variant="subtitle2" gutterBottom>Devoluciones</Typography>
+            <Typography variant="subtitle2" gutterBottom>
+              Devoluciones
+            </Typography>
             <Stack spacing={0.5}>
               {sale.returns.map((ret) => (
                 <Box key={ret.id} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                   <Typography variant="body2" color="text.secondary">
-                    {formatDateTime(ret.createdAt)}{ret.reason ? ` — ${ret.reason}` : ''}
+                    {formatDateTime(ret.createdAt)}
+                    {ret.reason ? ` — ${ret.reason}` : ''}
                   </Typography>
                   <Typography variant="body2">- {formatCurrency(ret.total)}</Typography>
                 </Box>
               ))}
               <Box sx={{ display: 'flex', justifyContent: 'space-between', pt: 0.5 }}>
-                <Typography variant="body2" fontWeight={600}>Total devuelto</Typography>
-                <Typography variant="body2" fontWeight={600}>- {formatCurrency(totalReturned)}</Typography>
+                <Typography variant="body2" fontWeight={600}>
+                  Total devuelto
+                </Typography>
+                <Typography variant="body2" fontWeight={600}>
+                  - {formatCurrency(totalReturned)}
+                </Typography>
               </Box>
             </Stack>
           </>
@@ -139,20 +165,20 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
         )}
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 2 }}>
-        <Button onClick={handleClose} disabled={isCancelling}>Cerrar</Button>
-        <Button startIcon={<PrintOutlinedIcon />} onClick={printTicket}>Imprimir ticket</Button>
-        {canReturn && !confirmCancel && (
-          <Button
-            color="warning"
-            startIcon={<AssignmentReturnOutlinedIcon />}
-            onClick={() => setReturnOpen(true)}
-            disabled={isCancelling}
-          >
+        <Button onClick={handleClose} disabled={isCancelling}>
+          Cerrar
+        </Button>
+        <Button startIcon={<PrintOutlinedIcon />} onClick={printTicket}>
+          Imprimir ticket
+        </Button>
+        {canManageSale && canReturn && !confirmCancel && (
+          <Button color="warning" startIcon={<AssignmentReturnOutlinedIcon />} onClick={() => setReturnOpen(true)} disabled={isCancelling}>
             Devolución
           </Button>
         )}
-        {sale.status === 'COMPLETED' && (
-          confirmCancel ? (
+        {canManageSale &&
+          sale.status === 'COMPLETED' &&
+          (confirmCancel ? (
             <Button color="error" variant="contained" onClick={() => onCancelSale(sale.id)} disabled={isCancelling}>
               Confirmar anulación
             </Button>
@@ -160,8 +186,7 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
             <Button color="error" onClick={() => setConfirmCancel(true)} disabled={isCancelling}>
               Anular venta
             </Button>
-          )
-        )}
+          ))}
       </DialogActions>
 
       {/* Ticket oculto en pantalla; react-to-print lo copia a un iframe aislado para imprimir */}
@@ -192,5 +217,5 @@ SaleDetailModal.propTypes = {
   isCancelling: PropTypes.bool,
   onReturn: PropTypes.func.isRequired,
   isReturning: PropTypes.bool,
-  returnError: PropTypes.string,
+  returnError: PropTypes.string
 };

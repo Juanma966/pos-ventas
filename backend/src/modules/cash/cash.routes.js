@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { cashController } from './cash.controller.js';
-import { authenticate } from '../../middleware/auth.middleware.js';
+import { authenticate, authorize } from '../../middleware/auth.middleware.js';
 import { validate } from '../../middleware/validate.middleware.js';
+import { CASH_ROLES } from '../../config/roles.js';
 import { openCashSchema, cashMovementSchema, closeCashSchema } from './cash.schema.js';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate, authorize(...CASH_ROLES));
 
 router.get('/current', cashController.getCurrent);
 router.get('/sessions', cashController.getSessions);

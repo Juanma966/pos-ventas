@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import { createContext, useCallback, useEffect, useState } from 'react';
 import { authService } from 'services/authService';
+import { canAccess } from 'constants/permissions';
 
 export const AuthContext = createContext(null);
 
@@ -39,8 +40,11 @@ export function AuthProvider({ children }) {
     return updated;
   }, []);
 
+  // ¿El usuario actual tiene alguno de estos roles? (sin lista => cualquiera)
+  const hasRole = useCallback((allowedRoles) => canAccess(user?.role, allowedRoles), [user]);
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, updateProfile, isAuthenticated: !!user }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, updateProfile, hasRole, isAuthenticated: !!user }}>
       {children}
     </AuthContext.Provider>
   );

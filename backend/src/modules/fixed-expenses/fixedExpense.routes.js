@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { fixedExpenseController } from './fixedExpense.controller.js';
-import { authenticate } from '../../middleware/auth.middleware.js';
+import { authenticate, authorize } from '../../middleware/auth.middleware.js';
 import { validate } from '../../middleware/validate.middleware.js';
+import { ADMIN_ONLY } from '../../config/roles.js';
 import { createFixedExpenseSchema, updateFixedExpenseSchema } from './fixedExpense.schema.js';
 
 const router = Router();
 
-router.use(authenticate);
+router.use(authenticate, authorize(...ADMIN_ONLY));
 
 router.get('/', fixedExpenseController.getAll);
 router.get('/summary', fixedExpenseController.getSummary);
