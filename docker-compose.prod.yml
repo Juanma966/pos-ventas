@@ -3,7 +3,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: pos-db
+    container_name: ${STACK_NAME:-pos}-db
     restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
@@ -19,7 +19,7 @@ services:
 
   backend:
     build: ./backend
-    container_name: pos-backend
+    container_name: ${STACK_NAME:-pos}-backend
     restart: unless-stopped
     depends_on:
       postgres:
@@ -47,7 +47,7 @@ services:
       context: ./frontend
       args:
         VITE_API_URL: /api
-    container_name: pos-frontend
+    container_name: ${STACK_NAME:-pos}-frontend
     restart: unless-stopped
     depends_on:
       backend:
@@ -57,4 +57,5 @@ services:
 
 volumes:
   pos-pgdata:
-    name: pos-ventas-pgdata-prod
+    # Un volumen por cliente (STACK_NAME); permite varios stacks en el mismo host.
+    name: ${STACK_NAME:-pos}-pgdata

@@ -102,12 +102,45 @@ producción). Acordate de poner `FRONTEND_URL=https://pos.midominio.com` en el `
 
 ---
 
-## 6. Backups
+## 6. Alta de clientes (Modelo A: varios en un mismo host)
 
-Backup manual de la base:
+El sistema se comercializa como **una instalación por cliente**: cada comercio
+tiene su propio stack (contenedores, base y volumen separados). Para dar de alta
+un cliente en un servidor hay un script que automatiza todo:
 
 ```bash
-./scripts/backup.sh            # genera backups/pos_ventas_AAAAMMDD_HHMMSS.sql.gz
+./scripts/nuevo-cliente.sh <slug> [puerto] [dominio]
+# Ej: ./scripts/nuevo-cliente.sh panaderia-lopez 8090 https://panaderia.midominio.com
+```
+
+El script:
+
+1. Genera `clientes/<slug>.env` con **secretos únicos** (contraseña de base y JWT) y un puerto libre.
+2. Levanta el stack aislado (`docker compose -p <slug> ...`), con contenedores `<slug>-db`, `<slug>-backend`, `<slug>-frontend`.
+3. Espera a que el backend esté sano y **siembra el admin** (`admin@pos.com` / `admin123`).
+4. Imprime la URL, las credenciales y los comandos para operar ese cliente.
+
+Después, apuntá el subdominio del cliente al puerto asignado con el reverse proxy
+(sección 5) y **cambiá la contraseña del admin** en el primer login.
+
+Operar un cliente ya creado:
+
+```bash
+docker compose -p <slug> --env-file clientes/<slug>.env -f docker-compose.prod.yml <cmd>   # ps, logs, down, up...
+```
+
+> `clientes/` contiene secretos de cada cliente y está en `.gitignore`. Guardá
+> una copia segura de esos `.env` (sin ellos no podés operar el stack).
+
+---
+
+## 7. Backups
+
+Backup manual de la base (por defecto usa el `.env` de la raíz):
+
+```bash
+./scripts/backup.sh                                   # genera backups/pos/pos_ventas_AAAAMMDD_HHMMSS.sql.gz
+./scripts/backup.sh clientes/<slug>.env <slug>        # backup de un cliente puntual
 ```
 
 Conserva los últimos 14 automáticamente. Programar un backup diario con cron:
@@ -121,7 +154,8 @@ crontab -e
 Restaurar un backup (operación destructiva, pide confirmación):
 
 ```bash
-./scripts/restore.sh backups/pos_ventas_20260101_030000.sql.gz
+./scripts/restore.sh backups/pos/pos_ventas_20260101_030000.sql.gz
+./scripts/restore.sh backups/<slug>/archivo.sql.gz clientes/<slug>.env <slug>   # restore de un cliente
 ```
 
 > Recomendación: copiar los backups a otro lugar (otro servidor, almacenamiento
@@ -129,7 +163,7 @@ Restaurar un backup (operación destructiva, pide confirmación):
 
 ---
 
-## 7. Operación diaria
+## 8. Operación diaria
 
 **Ver estado y salud:**
 
@@ -162,7 +196,7 @@ docker compose -f docker-compose.prod.yml up -d
 
 ---
 
-## 8. Checklist de seguridad
+## 9. Checklist de seguridad
 
 - [ ] Secretos JWT fuertes (32+ chars) y contraseña de Postgres fuerte en `.env`.
 - [ ] Contraseña del admin de ejemplo cambiada tras el primer login.

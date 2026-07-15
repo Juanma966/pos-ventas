@@ -1,28 +1,34 @@
 #!/usr/bin/env bash
-# Restaura un backup en la base Postgres del stack. OPERACIÓN DESTRUCTIVA.
-# Uso:  ./scripts/restore.sh <archivo.sql.gz>
+# Restaura un backup en la base Postgres de un stack. OPERACIÓN DESTRUCTIVA.
+# Uso:  ./scripts/restore.sh <archivo.sql.gz> [env_file] [proyecto]
+#   env_file  archivo de variables (por defecto: .env). Para un cliente: clientes/<slug>.env
+#   proyecto  nombre del proyecto compose (-p). Para un cliente suele ser el slug.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
 
-if [ -f .env ]; then
-  set -a; . ./.env; set +a
-else
-  echo "ERROR: falta el archivo .env en la raíz del proyecto." >&2
-  exit 1
-fi
-
-COMPOSE="docker compose -f docker-compose.prod.yml"
 FILE="${1:-}"
+ENVFILE="${2:-.env}"
+PROJECT="${3:-}"
 
 if [ -z "$FILE" ]; then
-  echo "Uso: ./scripts/restore.sh <archivo.sql.gz>" >&2
+  echo "Uso: ./scripts/restore.sh <archivo.sql.gz> [env_file] [proyecto]" >&2
   exit 1
 fi
 if [ ! -f "$FILE" ]; then
   echo "ERROR: no existe el archivo '$FILE'." >&2
   exit 1
 fi
+if [ ! -f "$ENVFILE" ]; then
+  echo "ERROR: no existe el archivo de entorno '$ENVFILE'." >&2
+  exit 1
+fi
+
+set -a; . "$ENVFILE"; set +a
+
+COMPOSE="docker compose"
+[ -n "$PROJECT" ] && COMPOSE="$COMPOSE -p $PROJECT"
+COMPOSE="$COMPOSE --env-file $ENVFILE -f docker-compose.prod.yml"
 
 echo "ADVERTENCIA: esto sobrescribe la base '$POSTGRES_DB' con el contenido de:"
 echo "  $FILE"

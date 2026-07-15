@@ -17,6 +17,9 @@ backend/.env
 # Backups de la base de datos
 /backups/
 
+# Configuración por cliente (secretos de cada stack) — Modelo A
+/clientes/
+
 # Logs
 npm-debug.log*
 yarn-debug.log*

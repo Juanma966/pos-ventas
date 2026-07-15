@@ -1,23 +1,31 @@
 #!/usr/bin/env bash
-# Backup de la base de datos Postgres del stack de producción.
-# Uso:  ./scripts/backup.sh [directorio_destino]   (por defecto: ./backups)
+# Backup de la base de datos Postgres de un stack.
+# Uso:  ./scripts/backup.sh [env_file] [proyecto]
+#   env_file  archivo de variables (por defecto: .env). Para un cliente: clientes/<slug>.env
+#   proyecto  nombre del proyecto compose (-p). Para un cliente suele ser el slug.
 set -euo pipefail
 
 # Ubicarse en la raíz del repo (donde está el docker-compose.prod.yml)
 cd "$(dirname "$0")/.."
 
-# Cargar variables (POSTGRES_USER, POSTGRES_DB, ...) desde .env
-if [ -f .env ]; then
-  set -a; . ./.env; set +a
-else
-  echo "ERROR: falta el archivo .env en la raíz del proyecto." >&2
+ENVFILE="${1:-.env}"
+PROJECT="${2:-}"
+RETENTION=14   # cantidad de backups a conservar
+
+if [ ! -f "$ENVFILE" ]; then
+  echo "ERROR: no existe el archivo de entorno '$ENVFILE'." >&2
   exit 1
 fi
 
-COMPOSE="docker compose -f docker-compose.prod.yml"
-BACKUP_DIR="${1:-backups}"
-RETENTION=14   # cantidad de backups a conservar
+# Cargar variables (POSTGRES_USER, POSTGRES_DB, STACK_NAME, ...)
+set -a; . "$ENVFILE"; set +a
 
+COMPOSE="docker compose"
+[ -n "$PROJECT" ] && COMPOSE="$COMPOSE -p $PROJECT"
+COMPOSE="$COMPOSE --env-file $ENVFILE -f docker-compose.prod.yml"
+
+# Un subdirectorio por stack/cliente
+BACKUP_DIR="backups/${STACK_NAME:-pos}"
 mkdir -p "$BACKUP_DIR"
 TS=$(date +%Y%m%d_%H%M%S)
 FILE="$BACKUP_DIR/${POSTGRES_DB}_${TS}.sql.gz"
