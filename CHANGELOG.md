@@ -1,5 +1,16 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-16 — Base de tests de integración del backend
+
+**Agregado:**
+
+- Suite de tests de integración con `node:test` (runner nativo de Node 20, sin dependencias nuevas): 67 tests en 4 suites — `auth` (login/validación/me), `permissions` (matriz completa de roles admin/cajero/vendedor), `sales` (stock, anulación, devolución parcial) y `cash` (apertura única, movimientos, venta en efectivo → movimiento automático, cierre con arqueo)
+- Infraestructura: base de datos de test separada (`pos_ventas_test`) que se resetea en cada corrida (`tests/reset-db.js`), helpers `tests/helpers/env.js` y `testServer.js` (app real en puerto libre + `fetch`)
+- Script `pnpm test` en `backend/package.json`
+- `TESTING.md`: guía didáctica de cómo están hechos los tests y cómo escribir nuevos
+
+---
+
 ## 2026-07-13 — Fase 15: Producción (seguridad, Docker, backups, docs)
 
 **Agregado:**

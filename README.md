@@ -56,4 +56,5 @@ Ver **[DEPLOY.md](DEPLOY.md)** para el despliegue con Docker en un VPS.
 - [ROADMAP.md](ROADMAP.md) — estado y fases del proyecto.
 - [ARCHITECTURE.md](ARCHITECTURE.md) — decisiones técnicas y estructura.
 - [BACKEND.md](BACKEND.md) / [FRONTEND.md](FRONTEND.md) — guías para crear/modificar entidades y vistas.
+- [TESTING.md](TESTING.md) — cómo están hechos los tests del backend y cómo escribir nuevos (`cd backend && pnpm test`).
 - [CHANGELOG.md](CHANGELOG.md) — historial de cambios.
