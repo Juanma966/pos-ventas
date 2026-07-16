@@ -2,13 +2,14 @@ import { lazy } from 'react';
 
 import MainLayout from 'layouts/MainLayout';
 import Loadable from 'components/Loadable';
-import PagePlaceholder from 'components/PagePlaceholder';
 import ProtectedRoute from './ProtectedRoute';
 import RequireRole from './RequireRole';
 import { ADMIN_ONLY, CASH_ROLES } from 'constants/permissions';
 
 const DashboardDefault = Loadable(lazy(() => import('pages/dashboard/Default')));
 const ProductsPage = Loadable(lazy(() => import('pages/products/ProductsPage')));
+const CategoriesPage = Loadable(lazy(() => import('pages/categories/CategoriesPage')));
+const BrandsPage = Loadable(lazy(() => import('pages/brands/BrandsPage')));
 const CustomersPage = Loadable(lazy(() => import('pages/customers/CustomersPage')));
 const SuppliersPage = Loadable(lazy(() => import('pages/suppliers/SuppliersPage')));
 const PurchasesPage = Loadable(lazy(() => import('pages/purchases/PurchasesPage')));
@@ -41,7 +42,7 @@ const MainRoutes = {
       path: 'categorias',
       element: (
         <RequireRole roles={ADMIN_ONLY}>
-          <PagePlaceholder title="Categorías" />
+          <CategoriesPage />
         </RequireRole>
       )
     },
@@ -49,7 +50,7 @@ const MainRoutes = {
       path: 'marcas',
       element: (
         <RequireRole roles={ADMIN_ONLY}>
-          <PagePlaceholder title="Marcas" />
+          <BrandsPage />
         </RequireRole>
       )
     },
