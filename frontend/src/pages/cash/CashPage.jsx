@@ -1,10 +1,8 @@
 import { useState } from 'react';
 
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
-import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -15,6 +13,7 @@ import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 
 import MainCard from 'components/cards/MainCard';
 import useCash from 'hooks/useCash';
+import useNotification from 'hooks/useNotification';
 import { cashService } from 'services/cashService';
 import formatCurrency from 'utils/formatCurrency';
 import SessionSummary from './components/SessionSummary';
@@ -24,6 +23,7 @@ import CloseSessionModal from './components/CloseSessionModal';
 
 export default function CashPage() {
   const { session, isOpen, isLoading, mutate } = useCash();
+  const { notify } = useNotification();
 
   const [openingAmount, setOpeningAmount] = useState('');
   const [isOpening, setIsOpening] = useState(false);
@@ -36,16 +36,15 @@ export default function CashPage() {
   const [isClosing, setIsClosing] = useState(false);
   const [closeError, setCloseError] = useState('');
 
-  const [feedback, setFeedback] = useState(null);
-
   const handleOpenSession = async () => {
     setIsOpening(true);
     try {
       await cashService.open({ openingAmount: Number(openingAmount) || 0 });
       setOpeningAmount('');
       await mutate();
+      notify.success('Caja abierta');
     } catch (err) {
-      setFeedback({ severity: 'error', message: err.response?.data?.message ?? 'No se pudo abrir la caja' });
+      notify.error(err.response?.data?.message ?? 'No se pudo abrir la caja');
     } finally {
       setIsOpening(false);
     }
@@ -58,6 +57,7 @@ export default function CashPage() {
       await cashService.addMovement(payload);
       await mutate();
       setMovementOpen(false);
+      notify.success('Movimiento registrado');
     } catch (err) {
       setMovementError(err.response?.data?.message ?? 'No se pudo registrar el movimiento');
     } finally {
@@ -74,7 +74,9 @@ export default function CashPage() {
       setCloseOpen(false);
       const diff = Number(closed.difference);
       const diffMsg = diff === 0 ? 'sin diferencia' : `diferencia ${diff > 0 ? '+' : ''}${formatCurrency(diff)}`;
-      setFeedback({ severity: diff === 0 ? 'success' : 'warning', message: `Caja cerrada — ${diffMsg}` });
+      const message = `Caja cerrada — ${diffMsg}`;
+      if (diff === 0) notify.success(message);
+      else notify.warning(message);
     } catch (err) {
       setCloseError(err.response?.data?.message ?? 'No se pudo cerrar la caja');
     } finally {
@@ -85,7 +87,9 @@ export default function CashPage() {
   if (isLoading) {
     return (
       <MainCard>
-        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></Box>
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+          <CircularProgress />
+        </Box>
       </MainCard>
     );
   }
@@ -97,10 +101,25 @@ export default function CashPage() {
           <Typography variant="h3">Caja</Typography>
           {isOpen && (
             <Stack direction="row" spacing={1}>
-              <Button variant="outlined" startIcon={<AddIcon />} onClick={() => { setMovementError(''); setMovementOpen(true); }}>
+              <Button
+                variant="outlined"
+                startIcon={<AddIcon />}
+                onClick={() => {
+                  setMovementError('');
+                  setMovementOpen(true);
+                }}
+              >
                 Registrar movimiento
               </Button>
-              <Button variant="contained" color="error" startIcon={<LockOutlinedIcon />} onClick={() => { setCloseError(''); setCloseOpen(true); }}>
+              <Button
+                variant="contained"
+                color="error"
+                startIcon={<LockOutlinedIcon />}
+                onClick={() => {
+                  setCloseError('');
+                  setCloseOpen(true);
+                }}
+              >
                 Cerrar caja
               </Button>
             </Stack>
@@ -110,7 +129,9 @@ export default function CashPage() {
         {!isOpen ? (
           <Box sx={{ py: 4, maxWidth: 360, mx: 'auto', textAlign: 'center' }}>
             <PointOfSaleIcon sx={{ fontSize: 48, color: 'text.secondary', mb: 1 }} />
-            <Typography variant="h4" gutterBottom>No hay una caja abierta</Typography>
+            <Typography variant="h4" gutterBottom>
+              No hay una caja abierta
+            </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
               Ingresá el monto inicial en efectivo para abrir la caja.
             </Typography>
@@ -123,7 +144,13 @@ export default function CashPage() {
                 fullWidth
                 inputProps={{ min: 0, step: 100 }}
               />
-              <Button variant="contained" size="large" onClick={handleOpenSession} disabled={isOpening} startIcon={isOpening ? <CircularProgress size={18} color="inherit" /> : null}>
+              <Button
+                variant="contained"
+                size="large"
+                onClick={handleOpenSession}
+                disabled={isOpening}
+                startIcon={isOpening ? <CircularProgress size={18} color="inherit" /> : null}
+              >
                 Abrir caja
               </Button>
             </Stack>
@@ -132,7 +159,9 @@ export default function CashPage() {
           <Stack spacing={3}>
             <SessionSummary session={session} />
             <Box>
-              <Typography variant="h4" sx={{ mb: 1 }}>Movimientos</Typography>
+              <Typography variant="h4" sx={{ mb: 1 }}>
+                Movimientos
+              </Typography>
               <MovementsTable movements={session.movements} />
             </Box>
           </Stack>
@@ -155,19 +184,6 @@ export default function CashPage() {
         isSubmitting={isClosing}
         error={closeError}
       />
-
-      <Snackbar
-        open={!!feedback}
-        autoHideDuration={5000}
-        onClose={() => setFeedback(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        {feedback ? (
-          <Alert severity={feedback.severity} onClose={() => setFeedback(null)} variant="filled">
-            {feedback.message}
-          </Alert>
-        ) : undefined}
-      </Snackbar>
     </>
   );
 }

@@ -8,11 +8,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid2';
-import Snackbar from '@mui/material/Snackbar';
 import TextField from '@mui/material/TextField';
 
 import MainCard from 'components/cards/MainCard';
 import useCompany from 'hooks/useCompany';
+import useNotification from 'hooks/useNotification';
 import { settingsService } from 'services/settingsService';
 
 const schema = z.object({
@@ -20,20 +20,25 @@ const schema = z.object({
   address: z.string().max(200).optional().or(z.literal('')),
   phone: z.string().max(30).optional().or(z.literal('')),
   taxId: z.string().max(20).optional().or(z.literal('')),
-  ticketFooter: z.string().max(200).optional().or(z.literal('')),
+  ticketFooter: z.string().max(200).optional().or(z.literal(''))
 });
 
 const defaultValues = { name: '', address: '', phone: '', taxId: '', ticketFooter: '' };
 
 export default function CompanySection() {
   const { company, isLoading, mutate } = useCompany();
+  const { notify } = useNotification();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [saved, setSaved] = useState(false);
 
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
     resolver: zodResolver(schema),
-    defaultValues,
+    defaultValues
   });
 
   useEffect(() => {
@@ -43,7 +48,7 @@ export default function CompanySection() {
         address: company.address ?? '',
         phone: company.phone ?? '',
         taxId: company.taxId ?? '',
-        ticketFooter: company.ticketFooter ?? '',
+        ticketFooter: company.ticketFooter ?? ''
       });
     }
   }, [company, reset]);
@@ -54,7 +59,7 @@ export default function CompanySection() {
     try {
       await settingsService.updateCompany(data);
       await mutate();
-      setSaved(true);
+      notify.success('Datos del negocio guardados');
     } catch (err) {
       setError(err.response?.data?.message ?? 'No se pudo guardar');
     } finally {
@@ -63,50 +68,85 @@ export default function CompanySection() {
   };
 
   if (isLoading) {
-    return <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></Box>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
     <MainCard title="Datos del negocio">
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, sm: 8 }}>
-            <Controller name="name" control={control} render={({ field }) => (
-              <TextField {...field} label="Nombre / Razón social *" fullWidth error={!!errors.name} helperText={errors.name?.message} />
-            )} />
+            <Controller
+              name="name"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} label="Nombre / Razón social *" fullWidth error={!!errors.name} helperText={errors.name?.message} />
+              )}
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
-            <Controller name="taxId" control={control} render={({ field }) => (
-              <TextField {...field} label="CUIT" fullWidth error={!!errors.taxId} helperText={errors.taxId?.message} />
-            )} />
+            <Controller
+              name="taxId"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} label="CUIT" fullWidth error={!!errors.taxId} helperText={errors.taxId?.message} />
+              )}
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 8 }}>
-            <Controller name="address" control={control} render={({ field }) => (
-              <TextField {...field} label="Dirección" fullWidth error={!!errors.address} helperText={errors.address?.message} />
-            )} />
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} label="Dirección" fullWidth error={!!errors.address} helperText={errors.address?.message} />
+              )}
+            />
           </Grid>
           <Grid size={{ xs: 12, sm: 4 }}>
-            <Controller name="phone" control={control} render={({ field }) => (
-              <TextField {...field} label="Teléfono" fullWidth error={!!errors.phone} helperText={errors.phone?.message} />
-            )} />
+            <Controller
+              name="phone"
+              control={control}
+              render={({ field }) => (
+                <TextField {...field} label="Teléfono" fullWidth error={!!errors.phone} helperText={errors.phone?.message} />
+              )}
+            />
           </Grid>
           <Grid size={12}>
-            <Controller name="ticketFooter" control={control} render={({ field }) => (
-              <TextField {...field} label="Pie del ticket" fullWidth error={!!errors.ticketFooter} helperText={errors.ticketFooter?.message ?? 'Mensaje al final del comprobante'} />
-            )} />
+            <Controller
+              name="ticketFooter"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Pie del ticket"
+                  fullWidth
+                  error={!!errors.ticketFooter}
+                  helperText={errors.ticketFooter?.message ?? 'Mensaje al final del comprobante'}
+                />
+              )}
+            />
           </Grid>
         </Grid>
         <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end' }}>
-          <Button type="submit" variant="contained" disabled={isSubmitting} startIcon={isSubmitting ? <CircularProgress size={16} /> : null}>
+          <Button
+            type="submit"
+            variant="contained"
+            disabled={isSubmitting}
+            startIcon={isSubmitting ? <CircularProgress size={16} /> : null}
+          >
             Guardar cambios
           </Button>
         </Box>
       </form>
-
-      <Snackbar open={saved} autoHideDuration={3000} onClose={() => setSaved(false)} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert severity="success" variant="filled" onClose={() => setSaved(false)}>Datos del negocio guardados</Alert>
-      </Snackbar>
     </MainCard>
   );
 }

@@ -20,6 +20,7 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 
 import MainCard from 'components/cards/MainCard';
 import { useUsers, useRoles } from 'hooks/useUsers';
+import useNotification from 'hooks/useNotification';
 import { userService } from 'services/userService';
 import UserFormModal from './UserFormModal';
 
@@ -28,6 +29,7 @@ const ROLE_LABELS = { admin: 'Administrador', cajero: 'Cajero', vendedor: 'Vende
 export default function UsersSection() {
   const { users, isLoading, mutate } = useUsers();
   const { roles } = useRoles();
+  const { notify } = useNotification();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -40,8 +42,13 @@ export default function UsersSection() {
     try {
       const payload = { ...data };
       if (selected && !payload.password) delete payload.password;
-      if (selected) await userService.update(selected.id, payload);
-      else await userService.create(payload);
+      if (selected) {
+        await userService.update(selected.id, payload);
+        notify.success('Usuario actualizado');
+      } else {
+        await userService.create(payload);
+        notify.success('Usuario creado');
+      }
       await mutate();
       setModalOpen(false);
       setSelected(null);
@@ -56,8 +63,10 @@ export default function UsersSection() {
     try {
       await userService.setActive(user.id, !user.active);
       await mutate();
-    } catch {
-      // el switch no cambia si falla; feedback en mejora futura
+      notify.success(user.active ? 'Usuario desactivado' : 'Usuario activado');
+    } catch (err) {
+      // el switch no cambia si falla
+      notify.error(err.response?.data?.message ?? 'No se pudo cambiar el estado del usuario');
     }
   };
 
@@ -65,13 +74,26 @@ export default function UsersSection() {
     <MainCard
       title="Usuarios"
       secondary={
-        <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={() => { setSelected(null); setError(''); setModalOpen(true); }}>
+        <Button
+          variant="contained"
+          size="small"
+          startIcon={<AddIcon />}
+          onClick={() => {
+            setSelected(null);
+            setError('');
+            setModalOpen(true);
+          }}
+        >
           Nuevo usuario
         </Button>
       }
     >
       {isLoading ? (
-        <Stack spacing={1}>{Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} height={40} />)}</Stack>
+        <Stack spacing={1}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Skeleton key={i} height={40} />
+          ))}
+        </Stack>
       ) : (
         <Table size="small">
           <TableHead>
@@ -86,15 +108,28 @@ export default function UsersSection() {
           <TableBody>
             {users.map((user) => (
               <TableRow key={user.id} hover>
-                <TableCell><Typography variant="body2" fontWeight={500}>{user.name}</Typography></TableCell>
+                <TableCell>
+                  <Typography variant="body2" fontWeight={500}>
+                    {user.name}
+                  </Typography>
+                </TableCell>
                 <TableCell>{user.email}</TableCell>
-                <TableCell><Chip label={ROLE_LABELS[user.role?.name] ?? user.role?.name} size="small" variant="outlined" /></TableCell>
+                <TableCell>
+                  <Chip label={ROLE_LABELS[user.role?.name] ?? user.role?.name} size="small" variant="outlined" />
+                </TableCell>
                 <TableCell align="center">
                   <Switch checked={user.active} onChange={() => handleToggleActive(user)} size="small" />
                 </TableCell>
                 <TableCell align="center">
                   <Tooltip title="Editar">
-                    <IconButton size="small" onClick={() => { setSelected(user); setError(''); setModalOpen(true); }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setSelected(user);
+                        setError('');
+                        setModalOpen(true);
+                      }}
+                    >
                       <EditOutlinedIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
@@ -105,7 +140,9 @@ export default function UsersSection() {
               <TableRow>
                 <TableCell colSpan={5}>
                   <Box sx={{ py: 3, textAlign: 'center' }}>
-                    <Typography variant="body2" color="text.secondary">No hay usuarios</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      No hay usuarios
+                    </Typography>
                   </Box>
                 </TableCell>
               </TableRow>
@@ -116,7 +153,12 @@ export default function UsersSection() {
 
       <UserFormModal
         open={modalOpen}
-        onClose={() => { if (!isSubmitting) { setModalOpen(false); setSelected(null); } }}
+        onClose={() => {
+          if (!isSubmitting) {
+            setModalOpen(false);
+            setSelected(null);
+          }
+        }}
         onSubmit={handleSubmit}
         user={selected}
         roles={roles}

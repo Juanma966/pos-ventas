@@ -18,11 +18,13 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import MainCard from 'components/cards/MainCard';
 import useCustomers from 'hooks/useCustomers';
+import useNotification from 'hooks/useNotification';
 import { customerService } from 'services/customerService';
 import CustomerTable from './components/CustomerTable';
 import CustomerFormModal from './components/CustomerFormModal';
 
 export default function CustomersPage() {
+  const { notify } = useNotification();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -38,7 +40,7 @@ export default function CustomersPage() {
   const { customers, total, isLoading, mutate } = useCustomers({
     search,
     page: page + 1,
-    limit: rowsPerPage,
+    limit: rowsPerPage
   });
 
   const handleOpenCreate = () => {
@@ -65,8 +67,10 @@ export default function CustomersPage() {
     try {
       if (selectedCustomer) {
         await customerService.update(selectedCustomer.id, data);
+        notify.success('Cliente actualizado');
       } else {
         await customerService.create(data);
+        notify.success('Cliente creado');
       }
       await mutate();
       setModalOpen(false);
@@ -85,8 +89,9 @@ export default function CustomersPage() {
       await customerService.remove(deleteDialog.customer.id);
       await mutate();
       setDeleteDialog({ open: false, customer: null });
-    } catch {
-      // snackbar de error en mejora futura
+      notify.success('Cliente eliminado');
+    } catch (err) {
+      notify.error(err.response?.data?.message ?? 'No se pudo eliminar el cliente');
     } finally {
       setIsDeleting(false);
     }
@@ -107,11 +112,18 @@ export default function CustomersPage() {
             <TextField
               placeholder="Buscar por nombre, email o documento..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(0);
+              }}
               size="small"
               sx={{ width: { xs: '100%', sm: 360 } }}
               InputProps={{
-                startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
+                )
               }}
             />
           </CardContent>
@@ -126,7 +138,10 @@ export default function CustomersPage() {
           onEdit={handleOpenEdit}
           onDelete={(customer) => setDeleteDialog({ open: true, customer })}
           onPageChange={(_, newPage) => setPage(newPage)}
-          onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          }}
         />
       </MainCard>
 
@@ -147,8 +162,12 @@ export default function CustomersPage() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialog({ open: false, customer: null })} disabled={isDeleting}>Cancelar</Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained" disabled={isDeleting}>Eliminar</Button>
+          <Button onClick={() => setDeleteDialog({ open: false, customer: null })} disabled={isDeleting}>
+            Cancelar
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained" disabled={isDeleting}>
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
     </>

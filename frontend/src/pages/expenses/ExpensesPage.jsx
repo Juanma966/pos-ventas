@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import MainCard from 'components/cards/MainCard';
 import { useFixedExpenses } from 'hooks/useFixedExpenses';
+import useNotification from 'hooks/useNotification';
 import { fixedExpenseService } from 'services/fixedExpenseService';
 import formatCurrency from 'utils/formatCurrency';
 import ExpenseTable from './components/ExpenseTable';
@@ -20,6 +21,7 @@ import ExpenseFormModal from './components/ExpenseFormModal';
 
 export default function ExpensesPage() {
   const { expenses, isLoading, mutate } = useFixedExpenses();
+  const { notify } = useNotification();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -34,8 +36,13 @@ export default function ExpensesPage() {
     setIsSubmitting(true);
     setError('');
     try {
-      if (selected) await fixedExpenseService.update(selected.id, data);
-      else await fixedExpenseService.create(data);
+      if (selected) {
+        await fixedExpenseService.update(selected.id, data);
+        notify.success('Gasto actualizado');
+      } else {
+        await fixedExpenseService.create(data);
+        notify.success('Gasto creado');
+      }
       await mutate();
       setModalOpen(false);
       setSelected(null);
@@ -53,8 +60,9 @@ export default function ExpensesPage() {
       await fixedExpenseService.remove(deleteDialog.expense.id);
       await mutate();
       setDeleteDialog({ open: false, expense: null });
-    } catch {
-      // feedback de error en mejora futura
+      notify.success('Gasto eliminado');
+    } catch (err) {
+      notify.error(err.response?.data?.message ?? 'No se pudo eliminar el gasto');
     } finally {
       setIsDeleting(false);
     }
@@ -62,14 +70,28 @@ export default function ExpensesPage() {
 
   return (
     <MainCard>
-      <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ sm: 'center' }} spacing={2} sx={{ mb: 3 }}>
+      <Stack
+        direction={{ xs: 'column', sm: 'row' }}
+        justifyContent="space-between"
+        alignItems={{ sm: 'center' }}
+        spacing={2}
+        sx={{ mb: 3 }}
+      >
         <div>
           <Typography variant="h3">Gastos fijos</Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
             Total mensual (activos): <strong>{formatCurrency(totalActivo)}</strong>
           </Typography>
         </div>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => { setSelected(null); setError(''); setModalOpen(true); }}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => {
+            setSelected(null);
+            setError('');
+            setModalOpen(true);
+          }}
+        >
           Nuevo gasto
         </Button>
       </Stack>
@@ -77,13 +99,22 @@ export default function ExpensesPage() {
       <ExpenseTable
         expenses={expenses}
         isLoading={isLoading}
-        onEdit={(expense) => { setSelected(expense); setError(''); setModalOpen(true); }}
+        onEdit={(expense) => {
+          setSelected(expense);
+          setError('');
+          setModalOpen(true);
+        }}
         onDelete={(expense) => setDeleteDialog({ open: true, expense })}
       />
 
       <ExpenseFormModal
         open={modalOpen}
-        onClose={() => { if (!isSubmitting) { setModalOpen(false); setSelected(null); } }}
+        onClose={() => {
+          if (!isSubmitting) {
+            setModalOpen(false);
+            setSelected(null);
+          }
+        }}
         onSubmit={handleSubmit}
         expense={selected}
         isSubmitting={isSubmitting}
@@ -98,8 +129,12 @@ export default function ExpensesPage() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialog({ open: false, expense: null })} disabled={isDeleting}>Cancelar</Button>
-          <Button onClick={handleDelete} color="error" variant="contained" disabled={isDeleting}>Eliminar</Button>
+          <Button onClick={() => setDeleteDialog({ open: false, expense: null })} disabled={isDeleting}>
+            Cancelar
+          </Button>
+          <Button onClick={handleDelete} color="error" variant="contained" disabled={isDeleting}>
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
     </MainCard>

@@ -16,10 +16,12 @@ import Typography from '@mui/material/Typography';
 import PhotoCameraOutlinedIcon from '@mui/icons-material/PhotoCameraOutlined';
 
 import useAuth from 'hooks/useAuth';
+import useNotification from 'hooks/useNotification';
 import resizeImage from 'utils/resizeImage';
 
 export default function ProfileModal({ open, onClose }) {
   const { user, updateProfile } = useAuth();
+  const { notify } = useNotification();
   const fileRef = useRef(null);
 
   const [name, setName] = useState('');
@@ -47,11 +49,15 @@ export default function ProfileModal({ open, onClose }) {
   };
 
   const handleSave = async () => {
-    if (!name.trim()) { setError('El nombre no puede estar vacío'); return; }
+    if (!name.trim()) {
+      setError('El nombre no puede estar vacío');
+      return;
+    }
     setIsSubmitting(true);
     setError('');
     try {
       await updateProfile({ name: name.trim(), avatar });
+      notify.success('Perfil actualizado');
       onClose();
     } catch (err) {
       setError(err.response?.data?.message ?? 'No se pudo guardar el perfil');
@@ -64,7 +70,11 @@ export default function ProfileModal({ open, onClose }) {
     <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
       <DialogTitle>Mi perfil</DialogTitle>
       <DialogContent dividers>
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {error && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {error}
+          </Alert>
+        )}
         <Stack spacing={2} alignItems="center" sx={{ pt: 1 }}>
           <Avatar src={avatar || undefined} sx={{ width: 96, height: 96, fontSize: 32 }}>
             {(name || 'U').charAt(0).toUpperCase()}
@@ -74,7 +84,9 @@ export default function ProfileModal({ open, onClose }) {
               Cambiar imagen
             </Button>
             {avatar && (
-              <Button size="small" color="error" onClick={() => setAvatar(null)}>Quitar</Button>
+              <Button size="small" color="error" onClick={() => setAvatar(null)}>
+                Quitar
+              </Button>
             )}
           </Stack>
           <input ref={fileRef} type="file" accept="image/*" hidden onChange={handleFile} />
@@ -86,8 +98,15 @@ export default function ProfileModal({ open, onClose }) {
         </Stack>
       </DialogContent>
       <DialogActions sx={{ px: 3, py: 2 }}>
-        <Button onClick={onClose} disabled={isSubmitting}>Cancelar</Button>
-        <Button variant="contained" onClick={handleSave} disabled={isSubmitting} startIcon={isSubmitting ? <CircularProgress size={16} /> : null}>
+        <Button onClick={onClose} disabled={isSubmitting}>
+          Cancelar
+        </Button>
+        <Button
+          variant="contained"
+          onClick={handleSave}
+          disabled={isSubmitting}
+          startIcon={isSubmitting ? <CircularProgress size={16} /> : null}
+        >
           Guardar
         </Button>
       </DialogActions>
@@ -97,5 +116,5 @@ export default function ProfileModal({ open, onClose }) {
 
 ProfileModal.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };

@@ -19,6 +19,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import MainCard from 'components/cards/MainCard';
 import useProducts from 'hooks/useProducts';
 import useAuth from 'hooks/useAuth';
+import useNotification from 'hooks/useNotification';
 import { ADMIN_ONLY } from 'constants/permissions';
 import { productService } from 'services/productService';
 import ProductTable from './components/ProductTable';
@@ -26,6 +27,7 @@ import ProductFormModal from './components/ProductFormModal';
 
 export default function ProductsPage() {
   const { hasRole } = useAuth();
+  const { notify } = useNotification();
   const canManage = hasRole(ADMIN_ONLY);
 
   const [search, setSearch] = useState('');
@@ -70,8 +72,10 @@ export default function ProductsPage() {
     try {
       if (selectedProduct) {
         await productService.update(selectedProduct.id, data);
+        notify.success('Producto actualizado');
       } else {
         await productService.create(data);
+        notify.success('Producto creado');
       }
       await mutate();
       setModalOpen(false);
@@ -90,8 +94,9 @@ export default function ProductsPage() {
       await productService.remove(deleteDialog.product.id);
       await mutate();
       setDeleteDialog({ open: false, product: null });
-    } catch {
-      // el error se puede mostrar en un snackbar futuro
+      notify.success('Producto eliminado');
+    } catch (err) {
+      notify.error(err.response?.data?.message ?? 'No se pudo eliminar el producto');
     } finally {
       setIsDeleting(false);
     }

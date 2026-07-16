@@ -33,11 +33,13 @@ import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 import MainCard from 'components/cards/MainCard';
+import useNotification from 'hooks/useNotification';
 import CatalogFormModal from './CatalogFormModal';
 
 // CRUD reutilizable para entidades simples del catálogo (categorías, marcas).
 export default function CatalogCrudPage({ title, singular, swrKey, service }) {
   const { data, isLoading, mutate } = useSWR(swrKey, service.getAll);
+  const { notify } = useNotification();
   const items = data ?? [];
 
   const [search, setSearch] = useState('');
@@ -80,8 +82,10 @@ export default function CatalogCrudPage({ title, singular, swrKey, service }) {
     try {
       if (selected) {
         await service.update(selected.id, formData);
+        notify.success(`Se actualizó la ${singular}`);
       } else {
         await service.create(formData);
+        notify.success(`Se creó la ${singular}`);
       }
       await mutate();
       setModalOpen(false);
@@ -101,6 +105,7 @@ export default function CatalogCrudPage({ title, singular, swrKey, service }) {
       await service.remove(deleteDialog.entity.id);
       await mutate();
       setDeleteDialog({ open: false, entity: null });
+      notify.success(`Se eliminó la ${singular}`);
     } catch (err) {
       setDeleteError(err.response?.data?.message ?? 'No se pudo eliminar');
     } finally {

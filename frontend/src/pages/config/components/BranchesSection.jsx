@@ -25,11 +25,13 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 
 import MainCard from 'components/cards/MainCard';
 import useBranches from 'hooks/useBranches';
+import useNotification from 'hooks/useNotification';
 import { branchService } from 'services/branchService';
 import BranchFormModal from './BranchFormModal';
 
 export default function BranchesSection() {
   const { branches, isLoading, mutate } = useBranches();
+  const { notify } = useNotification();
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -42,8 +44,13 @@ export default function BranchesSection() {
     setIsSubmitting(true);
     setError('');
     try {
-      if (selected) await branchService.update(selected.id, data);
-      else await branchService.create(data);
+      if (selected) {
+        await branchService.update(selected.id, data);
+        notify.success('Sucursal actualizada');
+      } else {
+        await branchService.create(data);
+        notify.success('Sucursal creada');
+      }
       await mutate();
       setModalOpen(false);
       setSelected(null);
@@ -61,8 +68,9 @@ export default function BranchesSection() {
       await branchService.remove(deleteDialog.branch.id);
       await mutate();
       setDeleteDialog({ open: false, branch: null });
-    } catch {
-      // feedback de error en mejora futura
+      notify.success('Sucursal eliminada');
+    } catch (err) {
+      notify.error(err.response?.data?.message ?? 'No se pudo eliminar la sucursal');
     } finally {
       setIsDeleting(false);
     }
@@ -72,13 +80,26 @@ export default function BranchesSection() {
     <MainCard
       title="Sucursales"
       secondary={
-        <Button variant="contained" size="small" startIcon={<AddIcon />} onClick={() => { setSelected(null); setError(''); setModalOpen(true); }}>
+        <Button
+          variant="contained"
+          size="small"
+          startIcon={<AddIcon />}
+          onClick={() => {
+            setSelected(null);
+            setError('');
+            setModalOpen(true);
+          }}
+        >
           Nueva sucursal
         </Button>
       }
     >
       {isLoading ? (
-        <Stack spacing={1}>{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} height={40} />)}</Stack>
+        <Stack spacing={1}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Skeleton key={i} height={40} />
+          ))}
+        </Stack>
       ) : (
         <Table size="small">
           <TableHead>
@@ -93,7 +114,11 @@ export default function BranchesSection() {
           <TableBody>
             {branches.map((branch) => (
               <TableRow key={branch.id} hover>
-                <TableCell><Typography variant="body2" fontWeight={500}>{branch.name}</Typography></TableCell>
+                <TableCell>
+                  <Typography variant="body2" fontWeight={500}>
+                    {branch.name}
+                  </Typography>
+                </TableCell>
                 <TableCell>{branch.address ?? '—'}</TableCell>
                 <TableCell>{branch.phone ?? '—'}</TableCell>
                 <TableCell align="center">
@@ -101,7 +126,14 @@ export default function BranchesSection() {
                 </TableCell>
                 <TableCell align="center">
                   <Tooltip title="Editar">
-                    <IconButton size="small" onClick={() => { setSelected(branch); setError(''); setModalOpen(true); }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => {
+                        setSelected(branch);
+                        setError('');
+                        setModalOpen(true);
+                      }}
+                    >
                       <EditOutlinedIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
@@ -117,7 +149,9 @@ export default function BranchesSection() {
               <TableRow>
                 <TableCell colSpan={5}>
                   <Box sx={{ py: 3, textAlign: 'center' }}>
-                    <Typography variant="body2" color="text.secondary">No hay sucursales cargadas</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      No hay sucursales cargadas
+                    </Typography>
                   </Box>
                 </TableCell>
               </TableRow>
@@ -128,7 +162,12 @@ export default function BranchesSection() {
 
       <BranchFormModal
         open={modalOpen}
-        onClose={() => { if (!isSubmitting) { setModalOpen(false); setSelected(null); } }}
+        onClose={() => {
+          if (!isSubmitting) {
+            setModalOpen(false);
+            setSelected(null);
+          }
+        }}
         onSubmit={handleSubmit}
         branch={selected}
         isSubmitting={isSubmitting}
@@ -143,8 +182,12 @@ export default function BranchesSection() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialog({ open: false, branch: null })} disabled={isDeleting}>Cancelar</Button>
-          <Button onClick={handleDelete} color="error" variant="contained" disabled={isDeleting}>Eliminar</Button>
+          <Button onClick={() => setDeleteDialog({ open: false, branch: null })} disabled={isDeleting}>
+            Cancelar
+          </Button>
+          <Button onClick={handleDelete} color="error" variant="contained" disabled={isDeleting}>
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
     </MainCard>

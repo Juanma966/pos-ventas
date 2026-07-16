@@ -18,11 +18,13 @@ import SearchIcon from '@mui/icons-material/Search';
 
 import MainCard from 'components/cards/MainCard';
 import useSuppliers from 'hooks/useSuppliers';
+import useNotification from 'hooks/useNotification';
 import { supplierService } from 'services/supplierService';
 import SupplierTable from './components/SupplierTable';
 import SupplierFormModal from './components/SupplierFormModal';
 
 export default function SuppliersPage() {
+  const { notify } = useNotification();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -38,7 +40,7 @@ export default function SuppliersPage() {
   const { suppliers, total, isLoading, mutate } = useSuppliers({
     search,
     page: page + 1,
-    limit: rowsPerPage,
+    limit: rowsPerPage
   });
 
   const handleOpenCreate = () => {
@@ -65,8 +67,10 @@ export default function SuppliersPage() {
     try {
       if (selectedSupplier) {
         await supplierService.update(selectedSupplier.id, data);
+        notify.success('Proveedor actualizado');
       } else {
         await supplierService.create(data);
+        notify.success('Proveedor creado');
       }
       await mutate();
       setModalOpen(false);
@@ -85,8 +89,9 @@ export default function SuppliersPage() {
       await supplierService.remove(deleteDialog.supplier.id);
       await mutate();
       setDeleteDialog({ open: false, supplier: null });
-    } catch {
-      // snackbar de error en mejora futura
+      notify.success('Proveedor eliminado');
+    } catch (err) {
+      notify.error(err.response?.data?.message ?? 'No se pudo eliminar el proveedor');
     } finally {
       setIsDeleting(false);
     }
@@ -107,11 +112,18 @@ export default function SuppliersPage() {
             <TextField
               placeholder="Buscar por nombre, email, documento o contacto..."
               value={search}
-              onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(0);
+              }}
               size="small"
               sx={{ width: { xs: '100%', sm: 360 } }}
               InputProps={{
-                startAdornment: <InputAdornment position="start"><SearchIcon fontSize="small" /></InputAdornment>
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" />
+                  </InputAdornment>
+                )
               }}
             />
           </CardContent>
@@ -126,7 +138,10 @@ export default function SuppliersPage() {
           onEdit={handleOpenEdit}
           onDelete={(supplier) => setDeleteDialog({ open: true, supplier })}
           onPageChange={(_, newPage) => setPage(newPage)}
-          onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0); }}
+          onRowsPerPageChange={(e) => {
+            setRowsPerPage(parseInt(e.target.value, 10));
+            setPage(0);
+          }}
         />
       </MainCard>
 
@@ -147,8 +162,12 @@ export default function SuppliersPage() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialog({ open: false, supplier: null })} disabled={isDeleting}>Cancelar</Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained" disabled={isDeleting}>Eliminar</Button>
+          <Button onClick={() => setDeleteDialog({ open: false, supplier: null })} disabled={isDeleting}>
+            Cancelar
+          </Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained" disabled={isDeleting}>
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
     </>

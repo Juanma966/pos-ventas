@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react';
 
-import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid2';
-import Snackbar from '@mui/material/Snackbar';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
 import MainCard from 'components/cards/MainCard';
 import useCart from 'hooks/useCart';
 import useCustomers from 'hooks/useCustomers';
+import useNotification from 'hooks/useNotification';
 import usePrintTicket from 'hooks/usePrintTicket';
 import { saleService } from 'services/saleService';
 import Ticket from 'pages/sales/components/Ticket';
@@ -20,12 +19,12 @@ import CheckoutPanel from './components/CheckoutPanel';
 export default function POSPage() {
   const { items, addProduct, setQuantity, removeProduct, clear, subtotal, count } = useCart();
   const { customers } = useCustomers({ limit: 1000 });
+  const { notify } = useNotification();
 
   const [discount, setDiscount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('EFECTIVO');
   const [customerId, setCustomerId] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [feedback, setFeedback] = useState(null); // { severity, message }
   const [lastSale, setLastSale] = useState(null);
 
   const { ticketRef, printTicket } = usePrintTicket();
@@ -50,14 +49,14 @@ export default function POSPage() {
         paymentMethod,
         discount: Number(discount) || 0,
         customerId: customerId || undefined,
-        items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity })),
+        items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity }))
       };
       const sale = await saleService.create(payload);
       setLastSale(sale);
-      setFeedback({ severity: 'success', message: `Venta #${sale.id} registrada — imprimiendo ticket` });
+      notify.success(`Venta #${sale.id} registrada — imprimiendo ticket`);
       resetSale();
     } catch (err) {
-      setFeedback({ severity: 'error', message: err.response?.data?.message ?? 'No se pudo registrar la venta' });
+      notify.error(err.response?.data?.message ?? 'No se pudo registrar la venta');
     } finally {
       setIsSubmitting(false);
     }
@@ -76,7 +75,11 @@ export default function POSPage() {
           <MainCard>
             <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1 }}>
               <Typography variant="h4">Carrito</Typography>
-              {count > 0 && <Typography variant="body2" color="text.secondary">{count} ítem(s)</Typography>}
+              {count > 0 && (
+                <Typography variant="body2" color="text.secondary">
+                  {count} ítem(s)
+                </Typography>
+              )}
             </Stack>
 
             <Cart items={items} onSetQuantity={setQuantity} onRemove={removeProduct} />
@@ -101,19 +104,6 @@ export default function POSPage() {
           </MainCard>
         </Grid>
       </Grid>
-
-      <Snackbar
-        open={!!feedback}
-        autoHideDuration={4000}
-        onClose={() => setFeedback(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        {feedback ? (
-          <Alert severity={feedback.severity} onClose={() => setFeedback(null)} variant="filled">
-            {feedback.message}
-          </Alert>
-        ) : undefined}
-      </Snackbar>
 
       {/* Ticket oculto de la última venta; react-to-print lo copia a un iframe para imprimir */}
       <Box sx={{ display: 'none' }}>

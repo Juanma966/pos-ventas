@@ -6,6 +6,7 @@ import router from 'routes';
 
 // project imports
 import NavigationScroll from 'layouts/NavigationScroll';
+import { NotificationProvider } from 'contexts/NotificationContext';
 
 import ThemeCustomization from 'theme';
 
@@ -25,9 +26,11 @@ export default function App() {
   return (
     <ThemeCustomization>
       <NavigationScroll>
-        <SWRConfig value={swrConfig}>
-          <RouterProvider router={router} />
-        </SWRConfig>
+        <NotificationProvider>
+          <SWRConfig value={swrConfig}>
+            <RouterProvider router={router} />
+          </SWRConfig>
+        </NotificationProvider>
       </NavigationScroll>
     </ThemeCustomization>
   );

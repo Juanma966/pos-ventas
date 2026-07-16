@@ -13,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 
 import MainCard from 'components/cards/MainCard';
 import useEmployees from 'hooks/useEmployees';
+import useNotification from 'hooks/useNotification';
 import { employeeService } from 'services/employeeService';
 import EmployeeTable from './components/EmployeeTable';
 import EmployeeFormModal from './components/EmployeeFormModal';
@@ -20,6 +21,7 @@ import EmployeeDetailModal from './components/EmployeeDetailModal';
 
 export default function EmployeesPage() {
   const { employees, isLoading, mutate } = useEmployees();
+  const { notify } = useNotification();
 
   const [formOpen, setFormOpen] = useState(false);
   const [selected, setSelected] = useState(null);
@@ -38,8 +40,13 @@ export default function EmployeesPage() {
     setIsSubmitting(true);
     setFormError('');
     try {
-      if (selected) await employeeService.update(selected.id, data);
-      else await employeeService.create(data);
+      if (selected) {
+        await employeeService.update(selected.id, data);
+        notify.success('Empleado actualizado');
+      } else {
+        await employeeService.create(data);
+        notify.success('Empleado creado');
+      }
       await mutate();
       setFormOpen(false);
       setSelected(null);
@@ -56,8 +63,9 @@ export default function EmployeesPage() {
     setMovError('');
     try {
       setDetail(await employeeService.getById(employee.id));
-    } catch {
+    } catch (err) {
       setDetailOpen(false);
+      notify.error(err.response?.data?.message ?? 'No se pudo cargar el detalle del empleado');
     }
   };
 
@@ -99,8 +107,9 @@ export default function EmployeesPage() {
       await employeeService.remove(deleteDialog.employee.id);
       await mutate();
       setDeleteDialog({ open: false, employee: null });
-    } catch {
-      // feedback en mejora futura
+      notify.success('Empleado eliminado');
+    } catch (err) {
+      notify.error(err.response?.data?.message ?? 'No se pudo eliminar el empleado');
     } finally {
       setIsDeleting(false);
     }
@@ -110,7 +119,15 @@ export default function EmployeesPage() {
     <MainCard>
       <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 3 }}>
         <Typography variant="h3">Personal</Typography>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => { setSelected(null); setFormError(''); setFormOpen(true); }}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => {
+            setSelected(null);
+            setFormError('');
+            setFormOpen(true);
+          }}
+        >
           Nuevo empleado
         </Button>
       </Stack>
@@ -119,13 +136,22 @@ export default function EmployeesPage() {
         employees={employees}
         isLoading={isLoading}
         onView={handleView}
-        onEdit={(employee) => { setSelected(employee); setFormError(''); setFormOpen(true); }}
+        onEdit={(employee) => {
+          setSelected(employee);
+          setFormError('');
+          setFormOpen(true);
+        }}
         onDelete={(employee) => setDeleteDialog({ open: true, employee })}
       />
 
       <EmployeeFormModal
         open={formOpen}
-        onClose={() => { if (!isSubmitting) { setFormOpen(false); setSelected(null); } }}
+        onClose={() => {
+          if (!isSubmitting) {
+            setFormOpen(false);
+            setSelected(null);
+          }
+        }}
         onSubmit={handleSubmit}
         employee={selected}
         isSubmitting={isSubmitting}
@@ -135,7 +161,10 @@ export default function EmployeesPage() {
       <EmployeeDetailModal
         open={detailOpen}
         employee={detail}
-        onClose={() => { setDetailOpen(false); setDetail(null); }}
+        onClose={() => {
+          setDetailOpen(false);
+          setDetail(null);
+        }}
         onAddMovement={handleAddMovement}
         onRemoveMovement={handleRemoveMovement}
         isSubmitting={movSubmitting}
@@ -146,12 +175,17 @@ export default function EmployeesPage() {
         <DialogTitle>Eliminar empleado</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            ¿Eliminar a <strong>{deleteDialog.employee?.name}</strong>? Se borrarán también sus movimientos. Esta acción no se puede deshacer.
+            ¿Eliminar a <strong>{deleteDialog.employee?.name}</strong>? Se borrarán también sus movimientos. Esta acción no se puede
+            deshacer.
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialog({ open: false, employee: null })} disabled={isDeleting}>Cancelar</Button>
-          <Button onClick={handleDelete} color="error" variant="contained" disabled={isDeleting}>Eliminar</Button>
+          <Button onClick={() => setDeleteDialog({ open: false, employee: null })} disabled={isDeleting}>
+            Cancelar
+          </Button>
+          <Button onClick={handleDelete} color="error" variant="contained" disabled={isDeleting}>
+            Eliminar
+          </Button>
         </DialogActions>
       </Dialog>
     </MainCard>
