@@ -44,8 +44,8 @@ Estado general: **Fases 1 a 11, 14 y 15 completas. Fase 12 parcial (falta Impres
 - [x] Campos: nombre, email, teléfono, documento, dirección, notas
 - [x] Límite de crédito
 - [x] Búsqueda y paginación
-- [ ] Historial de compras (requiere Fase 8 — Ventas)
-- [ ] Estadísticas por cliente (requiere Fase 8 — Ventas)
+- [x] Historial de compras (detalle del cliente con últimas 20 ventas)
+- [x] Estadísticas por cliente (total gastado neto de devoluciones, compras, ticket promedio, última compra)
 
 ## Fase 6 — Proveedores
 

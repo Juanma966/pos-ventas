@@ -11,7 +11,7 @@ export const customerController = {
 
   async getById(req, res, next) {
     try {
-      const data = await customerService.findById(Number(req.params.id));
+      const data = await customerService.getDetail(Number(req.params.id));
       res.json({ success: true, data });
     } catch (err) { next(err); }
   },

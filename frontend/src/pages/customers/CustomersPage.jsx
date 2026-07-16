@@ -22,9 +22,12 @@ import useNotification from 'hooks/useNotification';
 import { customerService } from 'services/customerService';
 import CustomerTable from './components/CustomerTable';
 import CustomerFormModal from './components/CustomerFormModal';
+import CustomerDetailModal from './components/CustomerDetailModal';
 
 export default function CustomersPage() {
   const { notify } = useNotification();
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [detail, setDetail] = useState(null);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(20);
@@ -42,6 +45,17 @@ export default function CustomersPage() {
     page: page + 1,
     limit: rowsPerPage
   });
+
+  const handleView = async (customer) => {
+    setDetailOpen(true);
+    setDetail(null);
+    try {
+      setDetail(await customerService.getById(customer.id));
+    } catch (err) {
+      setDetailOpen(false);
+      notify.error(err.response?.data?.message ?? 'No se pudo cargar el detalle del cliente');
+    }
+  };
 
   const handleOpenCreate = () => {
     setSelectedCustomer(null);
@@ -135,6 +149,7 @@ export default function CustomersPage() {
           page={page}
           rowsPerPage={rowsPerPage}
           isLoading={isLoading}
+          onView={handleView}
           onEdit={handleOpenEdit}
           onDelete={(customer) => setDeleteDialog({ open: true, customer })}
           onPageChange={(_, newPage) => setPage(newPage)}
@@ -144,6 +159,15 @@ export default function CustomersPage() {
           }}
         />
       </MainCard>
+
+      <CustomerDetailModal
+        open={detailOpen}
+        customer={detail}
+        onClose={() => {
+          setDetailOpen(false);
+          setDetail(null);
+        }}
+      />
 
       <CustomerFormModal
         open={modalOpen}

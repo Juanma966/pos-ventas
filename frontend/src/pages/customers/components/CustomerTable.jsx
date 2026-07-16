@@ -17,15 +17,32 @@ import Typography from '@mui/material/Typography';
 
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 
 const formatCurrency = (value) =>
   new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS', maximumFractionDigits: 0 }).format(value);
 
 function getInitials(name) {
-  return name.split(' ').slice(0, 2).map((w) => w[0]).join('').toUpperCase();
+  return name
+    .split(' ')
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
 }
 
-export default function CustomerTable({ customers, total, page, rowsPerPage, isLoading, onEdit, onDelete, onPageChange, onRowsPerPageChange }) {
+export default function CustomerTable({
+  customers,
+  total,
+  page,
+  rowsPerPage,
+  isLoading,
+  onView,
+  onEdit,
+  onDelete,
+  onPageChange,
+  onRowsPerPageChange
+}) {
   if (isLoading) {
     return (
       <TableContainer>
@@ -41,7 +58,9 @@ export default function CustomerTable({ customers, total, page, rowsPerPage, isL
             {Array.from({ length: 5 }).map((_, i) => (
               <TableRow key={i}>
                 {Array.from({ length: 6 }).map((__, j) => (
-                  <TableCell key={j}><Skeleton /></TableCell>
+                  <TableCell key={j}>
+                    <Skeleton />
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
@@ -54,7 +73,9 @@ export default function CustomerTable({ customers, total, page, rowsPerPage, isL
   if (!customers.length) {
     return (
       <Box sx={{ py: 6, textAlign: 'center' }}>
-        <Typography variant="body1" color="text.secondary">No se encontraron clientes</Typography>
+        <Typography variant="body1" color="text.secondary">
+          No se encontraron clientes
+        </Typography>
       </Box>
     );
   }
@@ -82,22 +103,29 @@ export default function CustomerTable({ customers, total, page, rowsPerPage, isL
                       {getInitials(customer.name)}
                     </Avatar>
                     <Box>
-                      <Typography variant="body2" fontWeight={500}>{customer.name}</Typography>
+                      <Typography variant="body2" fontWeight={500}>
+                        {customer.name}
+                      </Typography>
                       {customer.email && (
-                        <Typography variant="caption" color="text.secondary">{customer.email}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {customer.email}
+                        </Typography>
                       )}
                     </Box>
                   </Box>
                 </TableCell>
                 <TableCell>{customer.document ?? '—'}</TableCell>
                 <TableCell>{customer.phone ?? '—'}</TableCell>
-                <TableCell align="right">
-                  {Number(customer.creditLimit) > 0 ? formatCurrency(customer.creditLimit) : '—'}
-                </TableCell>
+                <TableCell align="right">{Number(customer.creditLimit) > 0 ? formatCurrency(customer.creditLimit) : '—'}</TableCell>
                 <TableCell align="center">
                   <Chip label={customer.active ? 'Activo' : 'Inactivo'} color={customer.active ? 'success' : 'default'} size="small" />
                 </TableCell>
                 <TableCell align="center">
+                  <Tooltip title="Ver historial">
+                    <IconButton size="small" onClick={() => onView(customer)}>
+                      <VisibilityOutlinedIcon fontSize="small" />
+                    </IconButton>
+                  </Tooltip>
                   <Tooltip title="Editar">
                     <IconButton size="small" onClick={() => onEdit(customer)}>
                       <EditOutlinedIcon fontSize="small" />
@@ -135,8 +163,9 @@ CustomerTable.propTypes = {
   page: PropTypes.number.isRequired,
   rowsPerPage: PropTypes.number.isRequired,
   isLoading: PropTypes.bool,
+  onView: PropTypes.func.isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   onPageChange: PropTypes.func.isRequired,
-  onRowsPerPageChange: PropTypes.func.isRequired,
+  onRowsPerPageChange: PropTypes.func.isRequired
 };

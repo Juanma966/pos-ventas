@@ -36,6 +36,41 @@ export const customerService = {
     return customer;
   },
 
+  // Detalle para la pantalla de clientes: cliente + estadísticas + últimas compras.
+  // "Total gastado" es neto: excluye ventas anuladas y resta las devoluciones.
+  async getDetail(id) {
+    const customer = await customerService.findById(id);
+
+    const [sales, recentSales] = await Promise.all([
+      prisma.sale.findMany({
+        where: { customerId: id },
+        select: { status: true, total: true, createdAt: true, returns: { select: { total: true } } },
+      }),
+      prisma.sale.findMany({
+        where: { customerId: id },
+        orderBy: { createdAt: 'desc' },
+        take: 20,
+        select: { id: true, status: true, paymentMethod: true, total: true, createdAt: true },
+      }),
+    ]);
+
+    const valid = sales.filter((s) => s.status !== 'CANCELLED');
+    const gross = valid.reduce((acc, s) => acc + Number(s.total), 0);
+    const returned = valid.reduce((acc, s) => acc + s.returns.reduce((a, r) => a + Number(r.total), 0), 0);
+    const salesCount = valid.length;
+
+    const stats = {
+      salesCount,
+      totalSpent: Number((gross - returned).toFixed(2)),
+      avgTicket: salesCount ? Number((gross / salesCount).toFixed(2)) : 0,
+      lastSaleAt: salesCount
+        ? valid.reduce((max, s) => (s.createdAt > max ? s.createdAt : max), valid[0].createdAt)
+        : null,
+    };
+
+    return { ...customer, stats, recentSales };
+  },
+
   async create(data) {
     if (data.email) {
       const exists = await prisma.customer.findUnique({ where: { email: data.email } });

@@ -1,5 +1,15 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-16 — Estadísticas e historial por cliente (cierra Fase 5)
+
+**Agregado:**
+
+- Backend: `GET /customers/:id` ahora devuelve `stats` (compras, total gastado neto de devoluciones y excluyendo anuladas, ticket promedio, última compra) y `recentSales` (últimas 20 ventas) — `customer.service.getDetail`
+- Frontend: botón "Ver historial" en la tabla de clientes → `CustomerDetailModal` con 4 KPIs + tabla del historial (reusa `SaleStatusChip` y `formatCurrency`)
+- Tests: suite `customers.test.js` (4 tests): stats en cero, ventas suman, anulada no cuenta, devolución resta — total de la suite: 71 tests
+
+---
+
 ## 2026-07-16 — Base de tests de integración del backend
 
 **Agregado:**
