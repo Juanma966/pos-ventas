@@ -1,0 +1,91 @@
+name: CI
+
+# Corre en cada push a master y en cada Pull Request.
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  # --- Tests de integración del backend (los 71 tests) ---
+  backend-tests:
+    name: Backend tests
+    runs-on: ubuntu-latest
+
+    # Postgres como servicio: la misma imagen que usamos en Docker.
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: pos_ventas_test
+          POSTGRES_USER: pos_user
+          POSTGRES_PASSWORD: pos_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U pos_user -d pos_ventas_test"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      # La suite lee esta variable (ver backend/tests/helpers/env.js).
+      TEST_DATABASE_URL: postgresql://pos_user:pos_password@localhost:5432/pos_ventas_test
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.4
+
+      - name: Instalar Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Generar Prisma Client
+        run: pnpm prisma generate
+
+      - name: Correr tests
+        run: pnpm test
+
+  # --- Build del frontend (verifica que compila) ---
+  frontend-build:
+    name: Frontend build
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.4
+
+      - name: Instalar Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build

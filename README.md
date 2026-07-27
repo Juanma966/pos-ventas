@@ -1,5 +1,7 @@
 # Appunti — Sistema POS
 
+![CI](https://github.com/Juanma966/pos-ventas/actions/workflows/ci.yml/badge.svg)
+
 Sistema de punto de venta (POS) para comercios: ventas, caja, inventario,
 compras, clientes, proveedores, reportes y más. Monorepo con backend de API REST
 y frontend web.

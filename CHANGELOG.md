@@ -1,5 +1,16 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-16 — Integración continua (GitHub Actions)
+
+**Agregado:**
+
+- Workflow `.github/workflows/ci.yml` que corre en cada push a `master` y en cada Pull Request:
+  - **backend-tests**: levanta Postgres 16 como servicio y corre los 71 tests de integración (`pnpm test`)
+  - **frontend-build**: compila el frontend (`pnpm build`) para detectar roturas de build
+- Badge de estado de CI en el README
+
+---
+
 ## 2026-07-16 — Estadísticas e historial por cliente (cierra Fase 5)
 
 **Agregado:**
