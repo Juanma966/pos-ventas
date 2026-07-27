@@ -9,7 +9,12 @@ export default function usePrintTicket() {
   const printTicket = useReactToPrint({
     contentRef: ticketRef,
     documentTitle: 'Ticket de venta',
-    pageStyle: '@page { size: 80mm auto; margin: 0; } body { margin: 0; }',
+    // 80mm = ancho estándar de papel térmico (para 58mm, cambiar acá y el ancho
+    // en Ticket.jsx). print-color-adjust fuerza el negro sólido en térmica.
+    pageStyle: `
+      @page { size: 80mm auto; margin: 0; }
+      body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    `,
   });
 
   return { ticketRef, printTicket };

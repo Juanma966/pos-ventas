@@ -1,5 +1,20 @@
 # CHANGELOG — POS Ventas
 
+## 2026-07-17 — Impresión térmica ESC/POS (corte automático, largo justo)
+
+**Agregado:**
+
+- **`print-agent/`**: puente de impresión local (Node + PowerShell, sin dependencias) que corre en la PC de caja y manda los tickets a la térmica en modo RAW. Endpoints `/status` y `/print`, solo escucha en `127.0.0.1`. Incluye `README.md` (instalación y arranque con Windows).
+- **`frontend/src/utils/escpos.js`**: generador de ticket en ESC/POS con code page CP437 (acentos y Ñ), corte parcial y margen de corte configurable.
+- **`printService`** + hook **`usePrintSale`**: el POS imprime por el puente (ESC/POS) y, si no está activo, **cae automáticamente** a la impresión por navegador. Igual en la reimpresión desde el detalle de venta.
+- **Configuración → Impresora**: sección con botón "Probar impresora".
+- `Ticket.jsx`/`usePrintTicket`: mejoras de impresión por navegador (respaldo) y margen de corte.
+- Docs: `PRINTING.md` reescrita con el método ESC/POS como recomendado.
+
+Resuelve el pendiente de **Impresoras (Fase 12)**: el ticket sale del largo justo, con corte automático y sin rollo en blanco.
+
+---
+
 ## 2026-07-16 — Integración continua (GitHub Actions)
 
 **Agregado:**

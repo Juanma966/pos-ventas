@@ -1,0 +1,14 @@
+{
+  "name": "pos-print-agent",
+  "version": "1.0.0",
+  "description": "Puente de impresión ESC/POS local para el POS (corre en la PC de caja)",
+  "private": true,
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -59,4 +59,5 @@ Ver **[DEPLOY.md](DEPLOY.md)** para el despliegue con Docker en un VPS.
 - [ARCHITECTURE.md](ARCHITECTURE.md) — decisiones técnicas y estructura.
 - [BACKEND.md](BACKEND.md) / [FRONTEND.md](FRONTEND.md) — guías para crear/modificar entidades y vistas.
 - [TESTING.md](TESTING.md) — cómo están hechos los tests del backend y cómo escribir nuevos (`cd backend && pnpm test`).
+- [PRINTING.md](PRINTING.md) — configurar la impresora térmica de tickets (setup + impresión silenciosa).
 - [CHANGELOG.md](CHANGELOG.md) — historial de cambios.

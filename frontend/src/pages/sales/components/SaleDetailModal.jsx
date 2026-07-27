@@ -24,6 +24,9 @@ import AssignmentReturnOutlinedIcon from '@mui/icons-material/AssignmentReturnOu
 import formatCurrency from 'utils/formatCurrency';
 import usePrintTicket from 'hooks/usePrintTicket';
 import useAuth from 'hooks/useAuth';
+import useCompany from 'hooks/useCompany';
+import { printService } from 'services/printService';
+import { buildSaleTicket } from 'utils/escpos';
 import { CASH_ROLES } from 'constants/permissions';
 import Ticket from './Ticket';
 import SaleStatusChip from './SaleStatusChip';
@@ -50,6 +53,16 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [returnOpen, setReturnOpen] = useState(false);
   const { ticketRef, printTicket } = usePrintTicket();
+  const { company } = useCompany();
+
+  // Reimpresión: intenta por el puente ESC/POS; si no está, cae al navegador.
+  const handlePrint = async () => {
+    try {
+      await printService.printBytes(buildSaleTicket(sale, company));
+    } catch {
+      printTicket();
+    }
+  };
   const { hasRole } = useAuth();
   // Anular y devolver: solo admin y cajero (el vendedor no revierte ventas).
   const canManageSale = hasRole(CASH_ROLES);
@@ -168,7 +181,7 @@ export default function SaleDetailModal({ open, sale, onClose, onCancelSale, isC
         <Button onClick={handleClose} disabled={isCancelling}>
           Cerrar
         </Button>
-        <Button startIcon={<PrintOutlinedIcon />} onClick={printTicket}>
+        <Button startIcon={<PrintOutlinedIcon />} onClick={handlePrint}>
           Imprimir ticket
         </Button>
         {canManageSale && canReturn && !confirmCancel && (

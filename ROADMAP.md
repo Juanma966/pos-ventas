@@ -150,9 +150,9 @@ Estado general: **Fases 1 a 11, 14 y 15 completas. Fase 12 parcial (falta Impres
 - [x] Registro de sucursales (CRUD): nombre, dirección, teléfono, activo — admin-only, en Configuración
 - [ ] Stock por sucursal + transferencias (epic futuro — requiere re-arquitectura mono→multi sucursal)
 
-### Pendientes
+### Impresoras (completo)
 
-- [ ] Impresoras
+- [x] Impresión térmica ESC/POS vía puente local (`print-agent/`): ticket del largo justo, corte automático, sin rollo en blanco; con fallback a impresión por navegador
 
 ### Descartado
 
